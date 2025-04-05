@@ -106,8 +106,7 @@ merged_df["BMI"] = -1
 
 # Calculate BMI only for rows with valid weight and height
 merged_df.loc[valid_mask, "BMI"] = (
-    (merged_df.loc[valid_mask, "weight"] / 2.205) / 
-    ((merged_df.loc[valid_mask, "height"] * 0.0254) ** 2)
+    merged_df.loc[valid_mask, "weight"] / ((merged_df.loc[valid_mask, "height"] / 100) ** 2)
 )
 
 # Optionally drop the original weight and height columns.
