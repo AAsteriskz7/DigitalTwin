@@ -16,7 +16,7 @@ const App: React.FC = () => {
 
   const sendDataToBackend = async () => {
     try {
-      const response = await fetch('http://10.0.2.2:5000/api/submit', { // Use 10.0.2.2 for Android emulator to reach localhost
+      const response = await fetch('http://10.0.2.2:5000/api/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
