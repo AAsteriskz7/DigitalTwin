@@ -51,7 +51,11 @@ categorical_features = ['Gender', 'blood_pressure', 'cholesterol', 'diabetes',
 numerical_features = [col for col in sample_data.keys() 
                     if col not in categorical_features and col != 'BMI']
 
-# Calculate and display percentiles
+# [HIGHLIGHT] Convert "Missing" entries to NaN and convert categorical features to numeric.
+for col in categorical_features:
+    if col in training_data.columns:
+        training_data[col] = pd.to_numeric(training_data[col], errors='coerce')
+
 print("\nPercentile Rankings (compared to population):")
 print("----------------------------------------------")
 
@@ -66,19 +70,15 @@ for feature in numerical_features:
 for feature in categorical_features:
     if feature in training_data.columns:
         value = sample_data[feature]
-        # Convert string values to integers for comparison
         try:
-            # If the value is a string representation of a number, convert it
-            if isinstance(value, str) and value.isdigit():
-                numeric_value = int(value)
-                percentage = 100 * (training_data[feature] == numeric_value).mean()
-                print(f"{feature}: {value} (Percentage of population with same value: {percentage:.1f}%)")
-            else:
-                # If it's already a number or non-numeric string
-                percentage = 100 * (training_data[feature] == value).mean()
-                print(f"{feature}: {value} (Percentage of population with same value: {percentage:.1f}%)")
-        except Exception as e:
-            print(f"{feature}: {value} (Error calculating percentage: {str(e)})")
+            # [HIGHLIGHT] Convert sample categorical value to float for proper comparison.
+            numeric_value = float(value)
+            percentage = 100 * (training_data[feature] == numeric_value).mean()
+            print(f"{feature}: {value} (Percentage of population with same value: {percentage:.1f}%)")
+        except ValueError:
+            # Fallback to string comparison if conversion fails
+            percentage = 100 * (training_data[feature] == value).mean()
+            print(f"{feature}: {value} (Percentage of population with same value: {percentage:.1f}%)")
 
 # BMI percentile (calculated field)
 if 'BMI' in training_data.columns:
