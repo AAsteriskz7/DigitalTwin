@@ -17,6 +17,7 @@ output_file = "./backend/merged.csv"
 
 column_rename_map = {
     "SEQN": "ID",
+    "RIAGENDR": "Gender",
     "RIDAGEYR": "Age",
     "ALQ121": "freq_alcohol",
     "BPQ020": "blood_pressure",
@@ -32,8 +33,7 @@ column_rename_map = {
     "SMQ681": "tobacco",
     "WHD010": "weight",
     "WHQ070": "weight_loss",
-    "WHD020": "RIAGENDR": "Gender",
-    "height",
+    "WHD020": "height",
 }
 
 # Read CSV files with dtype=str so that invalid markers (e.g. ".") remain as strings.
