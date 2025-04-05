@@ -33,7 +33,7 @@ column_rename_map = {
     "SMQ681": "tobacco",
     "WHD010": "weight",
     "WHQ070": "weight_loss",
-    "WHD020": "height",
+    "WHD020": "height"
 }
 
 # Read CSV files with dtype=str so that invalid markers (e.g. ".") remain as strings.
