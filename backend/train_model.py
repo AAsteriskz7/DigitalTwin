@@ -5,6 +5,7 @@ from xgboost import XGBRegressor
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
+import pickle
 
 # Load the merged CSV file (assumed to be created from your previous code)
 df = pd.read_csv("./backend/merged.csv")
@@ -84,3 +85,9 @@ print("\nFeature Importances:")
 importances = model.feature_importances_
 for feature, importance in zip(all_features, importances):
     print(f"{feature}: {importance:.4f}")
+
+# Save the trained pipeline to a file
+model_filename = "./backend/model.pkl"
+with open(model_filename, "wb") as f:
+    pickle.dump(pipeline, f)
+print(f"\nModel saved as {model_filename}")
