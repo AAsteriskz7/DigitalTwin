@@ -2,7 +2,8 @@
 
 .data-form-page {
   position: relative;
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 560;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,7 +16,7 @@
 
 .form-title {
   font-size: 36px;
-  font-weight: 700;
+  font-family: 'Unbounded', sans-serif;
   margin-bottom: 40px;
   color: #000;
   z-index: 2;
@@ -40,9 +41,14 @@ input, select {
   padding: 10px 16px;
   border-radius: 12px;
   border: 1px solid #ccc;
-  font-size: 16px;
+  font-size: 14px;
   font-family: 'Outfit', sans-serif;
+  color: gray;
   outline: none;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  -ms-border-radius: 12px;
+  -o-border-radius: 12px;
 }
 
 .height-group {
@@ -146,3 +152,4 @@ input, select {
   gap: 6px;
   margin-bottom: 20px; /* space between question blocks */
 }
+

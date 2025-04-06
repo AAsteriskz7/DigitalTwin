@@ -43,7 +43,6 @@ function DataTwo() {
       <form className="form-container" onSubmit={handleSubmit}>
 
         {/* Physical Activity */}
-        <h3 className="form-section-title">🏃 Physical Activity</h3>
         <label>Moderate-intensity activity (times/week)</label>
         <select name="moderateActivity" value={form.moderateActivity} onChange={handleChange}>
           <option value="">Select</option>
@@ -63,8 +62,7 @@ function DataTwo() {
         </select>
 
         {/* Weight Goals */}
-        <h3 className="form-section-title">⚖️ Weight Goals</h3>
-        <label>Have you tried to lose weight in the past year?</label>
+        <label>Have you tried losing weight in the past year?</label>
         <select
           name="weightLossAttempt"
           value={form.weightLossAttempt}
@@ -76,7 +74,6 @@ function DataTwo() {
         </select>
 
         {/* Sleep */}
-        <h3 className="form-section-title">🛌 Sleep</h3>
         <label>Sleep hours on weekdays</label>
         <select name="sleepWeekdays" value={form.sleepWeekdays} onChange={handleChange}>
           <option value="">Select</option>
