@@ -104,7 +104,7 @@ function DataThree() {
           className={form[name] === 'No' ? 'yn-button active' : 'yn-button'}
           onClick={() => handleChoice(name, 'No')}
         >
-          NO
+          No
         </button>
         <button
           type="button"

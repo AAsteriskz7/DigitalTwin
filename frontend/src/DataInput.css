@@ -2,7 +2,7 @@
 
 .data-form-page {
   position: relative;
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Unbounded', sans-serif;
   font-weight: 560;
   display: flex;
   flex-direction: column;
@@ -41,9 +41,10 @@ input, select {
   padding: 10px 16px;
   border-radius: 12px;
   border: 1px solid #ccc;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight:400;
   font-family: 'Outfit', sans-serif;
-  color: gray;
+  color: rgb(53, 53, 53);
   outline: none;
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
