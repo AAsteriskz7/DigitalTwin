@@ -4,7 +4,7 @@
 Node.js & npm installed
 
 📁 Step 1: Navigate to the frontend folder
-cd DigitalTwin-2/frontend
+cd frontend
 
 📦 Step 2: Install frontend dependencies
 npm install
