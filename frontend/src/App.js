@@ -9,7 +9,10 @@ import ResultsPage from './ResultsPage';
 function App() {
   return (
     <Router>
-      </Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/form" element={<DataOne />} />
+      <Route path="/main" element={<MainPage />} />
+      <Route path="/results" element={<ResultsPage />} />
     </Router>
   );
 }
