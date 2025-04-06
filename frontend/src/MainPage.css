@@ -3,7 +3,6 @@
 
 /* Main container */
 .digital-twin-container {
-  max-width: 1200px;
   margin: 0 auto;
   padding: 30px;
   font-family: 'Unbounded', sans-serif;
