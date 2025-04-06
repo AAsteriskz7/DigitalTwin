@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import os
 
-# File mapping: {input xpt name (without _L.xpt): output csv name}
 file_map = {
     "ALQ": "alcohol.csv",
     "BPQ": "blood_cholesterol.csv",
@@ -25,7 +24,6 @@ for prefix, output_file in file_map.items():
 
     df = pd.read_sas(input_path)
 
-    # Replace tiny float placeholders for SAS missing values
     df = df.applymap(lambda x: np.nan if isinstance(x, float) and abs(x) < 1e-10 else x)
 
     df.to_csv(output_path, index=False)

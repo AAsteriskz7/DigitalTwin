@@ -15,20 +15,12 @@ function HomePage() {
       <div className="blur blur4"></div>
 
       <h1 className="title">
-  <Typewriter
-    words={['T T', 'T', 'Twin']}
-    loop={1}
-    cursor
-    cursorStyle="_"
-    typeSpeed={90}
-    deleteSpeed={60}
-    delaySpeed={1000}
-  />
+  Digital Twin
 </h1>
 
       <h4 className="subtitle">
-      AI-driven health insights, personalized for you.
-       <br /> Step into the future of proactive care, powered by intelligent technology.
+      Build a simulation of your future self based on current habits.
+       <br />  See how different changes affect your biological age trajectory.
       </h4>
 
       <button className="demo-btn" onClick={() => navigate('/dataone')}>

@@ -6,9 +6,8 @@ import pickle
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Load saved pipeline
 model = None
 
 def load_model():
@@ -20,13 +19,11 @@ def load_model():
     return model
 
 def calculate_percentiles(person_data, predicted_age):
-    # Load training data
     training_data_path = os.path.join(os.path.dirname(__file__), "merged.csv")
     training_data = pd.read_csv(training_data_path)
     
     percentiles = {}
     
-    # --- Physical Health: activity ↑, sedentary ↓ ---
     phys_good = ["freq_moderate_activity", "freq_intense_activity"]
     phys_bad = ["mins_sedentary"]
     if all(f in training_data.columns for f in phys_good + phys_bad):
@@ -34,19 +31,18 @@ def calculate_percentiles(person_data, predicted_age):
         for f in phys_good:
             val = person_data[f]
             dist = training_data[f]
-            good_vals.append((dist <= val).mean() * 100)  # higher is better
+            good_vals.append((dist <= val).mean() * 100)
 
         for f in phys_bad:
             val = person_data[f]
             dist = training_data[f]
-            good_vals.append((dist >= val).mean() * 100)  # lower is better
+            good_vals.append((dist >= val).mean() * 100)
 
         physical_score = np.mean(good_vals)
         percentiles["Physical Activity"] = {
             "percentile": round(physical_score, 1)
         }
 
-    # --- Sleep Score (higher sleep = better) ---
     sleep_features = ["sleep_weekdays", "sleep_weekends"]
     if all(f in training_data.columns for f in sleep_features):
         sleep_vals = []
@@ -59,42 +55,38 @@ def calculate_percentiles(person_data, predicted_age):
             "percentile": round(sleep_score, 1)
         }
 
-    # --- Smokers Score (lower values = healthier) ---
     smoke_features = ["smoked_100_cigarettes", "smoke", "tobacco"]
     if all(f in training_data.columns for f in smoke_features):
         smoker_vals = []
         for f in smoke_features:
             val = float(person_data[f])
             dist = pd.to_numeric(training_data[f], errors='coerce').fillna(0)
-            smoker_vals.append((dist <= val).mean() * 100)  # lower value = better
+            smoker_vals.append((dist <= val).mean() * 100)
         smokers_score = np.mean(smoker_vals)
         percentiles["Smoking Habits"] = {
             "percentile": round(smokers_score, 1)
         }
 
-    # --- Blood Pressure (lower = healthier) ---
     if "blood_pressure" in training_data.columns:
         val = float(person_data["blood_pressure"])
         dist = pd.to_numeric(training_data["blood_pressure"], errors='coerce')
-        bp_percentile = (dist <= val).mean() * 100  # lower value = better
+        bp_percentile = (dist <= val).mean() * 100
         percentiles["Blood Pressure"] = {
             "percentile": round(bp_percentile, 1)
         }
 
-    # --- Cholesterol (lower = healthier) ---
     if "cholesterol" in training_data.columns:
         val = float(person_data["cholesterol"])
         dist = pd.to_numeric(training_data["cholesterol"], errors='coerce')
-        chol_percentile = (dist <= val).mean() * 100  # lower value = better
+        chol_percentile = (dist <= val).mean() * 100
         percentiles["Cholesterol"] = {
             "percentile": round(chol_percentile, 1)
         }
 
-    # --- BMI (lower within healthy range = better) ---
     if "BMI" in training_data.columns and "BMI" in person_data:
         val = person_data["BMI"]
         dist = training_data["BMI"]
-        bmi_percentile = (dist >= val).mean() * 100  # lower BMI is generally healthier
+        bmi_percentile = (dist >= val).mean() * 100
         percentiles["BMI"] = {
             "percentile": round(bmi_percentile, 1)
         }
@@ -114,31 +106,24 @@ def test_endpoint():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Get input data from request
         data = request.get_json()
         print("Received prediction request:", data)
         
-        # Calculate BMI if not provided
         if 'BMI' not in data or not data['BMI']:
             weight = float(data["weight"])
             height = float(data["height"])
             data["BMI"] = weight / ((height / 100) ** 2)
         
-        # Convert to DataFrame for model prediction
         person_df = pd.DataFrame([data])
         
-        # Load model and predict
         pipeline = load_model()
         predicted_age = float(pipeline.predict(person_df)[0])
         
-        # Average the input age and the predicted age
         input_age = float(data["age"])
         averaged_age = input_age * 0.75 + predicted_age * 0.25
         
-        # Calculate percentiles
         percentiles = calculate_percentiles(data, averaged_age)
         
-        # Return prediction and percentiles
         return jsonify({
             "status": "success",
             "predicted_age": round(averaged_age, 0),

@@ -593,45 +593,45 @@ function DigitalTwinPage() {
               <div className="custom-avatar">
                 <img src="/avatar-image.png" alt="Digital Twin Avatar" className="avatar-image" />
                 
-                <div className="risk-indicator heart-indicator risk-high" style={{top: "130px", left: "127px", zIndex: 5}}>
+                <div className={`risk-indicator heart-indicator risk-${healthRisks.heart ? healthRisks.heart.risk : 'medium'}`} style={{top: "130px", left: "127px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Heart Health</span>
-                    <p>Blood pressure status: {userData.blood_pressure === "1" ? "High" : "Normal"}</p>
+                    <p>{healthRisks.heart ? healthRisks.heart.reason : `Blood pressure status: ${userData.blood_pressure === "1" ? "High" : "Normal"}`}</p>
                   </div>
                 </div>
                 
-                <div className="risk-indicator sleep-indicator risk-medium" style={{top: "40px", left: "110px", zIndex: 5}}>
+                <div className={`risk-indicator sleep-indicator risk-${healthRisks.brain ? healthRisks.brain.risk : 'medium'}`} style={{top: "40px", left: "110px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Sleep Health</span>
-                    <p>Sleep duration: {userData.sleep} hours/day</p>
+                    <p>{healthRisks.brain ? healthRisks.brain.reason : `Sleep duration: ${userData.sleep} hours/day`}</p>
                   </div>
                 </div>
                 
-                <div className="risk-indicator fitness-indicator risk-medium" style={{top: "305px", left: "140px", zIndex: 5}}>
+                <div className={`risk-indicator fitness-indicator risk-${healthRisks.joints ? healthRisks.joints.risk : 'medium'}`} style={{top: "305px", left: "140px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Physical Fitness</span>
-                    <p>Activity level: {userData.physical_activity} times/week</p>
+                    <p>{healthRisks.joints ? healthRisks.joints.reason : `Activity level: ${userData.physical_activity} times/week`}</p>
                   </div>
                 </div>
                 
-                <div className="risk-indicator metabolic-indicator risk-high" style={{top: "210px", left: "95px", zIndex: 5}}>
+                <div className={`risk-indicator metabolic-indicator risk-${healthRisks.diabetes ? healthRisks.diabetes.risk : 'high'}`} style={{top: "210px", left: "95px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Metabolic Health</span>
-                    <p>Daily sitting time: {userData.mins_sedentary} hours</p>
+                    <p>{healthRisks.diabetes ? healthRisks.diabetes.reason : `Daily sitting time: ${userData.mins_sedentary} hours`}</p>
                   </div>
                 </div>
                 
-                <div className="risk-indicator lungs-indicator risk-high" style={{top: "150px", left: "97px", zIndex: 5}}>
+                <div className={`risk-indicator lungs-indicator risk-${healthRisks.lungs ? healthRisks.lungs.risk : 'high'}`} style={{top: "150px", left: "97px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Lung Health</span>
-                    <p>Smoking status: {userData.smoke === "1" ? "Daily smoker" : userData.smoke === "2" ? "Occasional smoker" : "Non-smoker"}</p>
+                    <p>{healthRisks.lungs ? healthRisks.lungs.reason : `Smoking status: ${userData.smoke === "1" ? "Daily smoker" : userData.smoke === "2" ? "Occasional smoker" : "Non-smoker"}`}</p>
                   </div>
                 </div>
                 
-                <div className="risk-indicator cholesterol-indicator risk-medium" style={{top: "165px", left: "127px", zIndex: 5}}>
+                <div className={`risk-indicator cholesterol-indicator risk-${healthRisks.heart ? healthRisks.heart.risk : 'medium'}`} style={{top: "165px", left: "127px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Cardiovascular Health</span>
-                    <p>Weight: {userData.weight} kg (BMI: {userData.BMI.toFixed(1)})</p>
+                    <p>{healthRisks.heart ? healthRisks.heart.reason : `Weight: ${userData.weight} kg (BMI: ${userData.BMI.toFixed(1)})`}</p>
                   </div>
                 </div>
               </div>

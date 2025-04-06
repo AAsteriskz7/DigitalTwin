@@ -34,17 +34,14 @@ column_rename_map = {
     "WHD020": "height"
 }
 
-# Read CSV files with dtype=str so that invalid markers (e.g. ".") remain as strings.
 merged_df = pd.read_csv(input_files[0], dtype=str)
 for f in input_files[1:]:
     df = pd.read_csv(f, dtype=str)
     merged_df = pd.merge(merged_df, df, on="SEQN", how="inner")
 
-# Keep only the columns specified in the rename map and rename them.
 merged_df = merged_df[list(column_rename_map.keys())]
 merged_df.rename(columns=column_rename_map, inplace=True)
 
-# Define invalid codes for each column based on comments.
 invalid_codes = {
     "Gender": [".",],
     "Age": [".",],
@@ -63,7 +60,6 @@ invalid_codes = {
     "height": ["7777", "9999", "."],
 }
 
-# Define categorical and numeric columns.
 categorical_cols = [
     "Gender", "blood_pressure", "cholesterol", "diabetes",
     "smoked_100_cigarettes", "smoke", "tobacco"
@@ -73,19 +69,16 @@ numeric_cols = [
     "mins_sedentary", "sleep_weekdays", "sleep_weekends", "weight", "height"
 ]
 
-# Replace invalid codes with NaN.
 for col, codes in invalid_codes.items():
     if col in merged_df.columns:
         merged_df[col] = merged_df[col].replace(codes, np.nan)
         
-# Convert numeric columns to appropriate type.
 for col in merged_df.columns:
-    if col == "ID":  # Skip ID column.
+    if col == "ID":
         continue
     elif col in numeric_cols:
         merged_df[col] = pd.to_numeric(merged_df[col], errors="coerce")
 
-# Fill missing values: -1 for numeric, "Missing" for categorical.
 for col in merged_df.columns:
     if col == "ID":
         continue
@@ -99,11 +92,9 @@ for col in merged_df.columns:
     else:
         merged_df[col] = merged_df[col].fillna(-1)
 
-# Ensure all categorical columns have string values.
 for col in categorical_cols:
     merged_df[col] = merged_df[col].astype(str)
 
-# Compute BMI using weight and height.
 weight_mask = merged_df["weight"] > 0
 height_mask = merged_df["height"] > 0
 valid_mask = weight_mask & height_mask
@@ -113,8 +104,6 @@ merged_df.loc[valid_mask, "BMI"] = (
     merged_df.loc[valid_mask, "weight"] / ((merged_df.loc[valid_mask, "height"] / 100) ** 2)
 )
 
-# Optionally drop the original weight and height columns.
-# merged_df.drop(["weight", "height"], axis=1, inplace=True)
 
 merged_df.to_csv(output_file, index=False)
 print(f"Merged CSV saved as {output_file}")
