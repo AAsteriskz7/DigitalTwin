@@ -6,32 +6,31 @@ import pickle
 with open("./backend/model.pkl", "rb") as f:
     pipeline = pickle.load(f)
 
-# Define fixed values for each feature that can be easily modified
+# Sample input
 sample_data = {
     "Gender": "1",
-    "blood_pressure": "1",
-    "cholesterol": "1",
-    "diabetes": "1",
-    "mins_sedentary": 480,
-    "freq_moderate_activity": 30,
-    "freq_intense_activity": 15,
-    "smoked_100_cigarettes": "1",
-    "smoke": "1",
-    "tobacco": "1",
-    "weight_loss": "1",
-    "freq_alcohol": 2,
-    "freq_physical_activity": 3,
-    "sleep_weekdays": 7.5,
-    "sleep_weekends": 8.0,
-    "weight": 180.0,
-    "height": 70.0,
+    "blood_pressure": "2.0",
+    "cholesterol": "2.0",
+    "diabetes": "2.0",
+    "mins_sedentary": 360.0,
+    "freq_moderate_activity": 4.0,
+    "freq_intense_activity": 4.0,
+    "smoked_100_cigarettes": "2.0",
+    "smoke": "1.0",
+    "tobacco": "2.0",
+    "weight_loss": "1.0",
+    "freq_alcohol": -1,
+    "sleep_weekdays": 7.0,
+    "sleep_weekends": 9.0,
+    "weight": 66.0,
+    "height": 128.0,
     "BMI": None
 }
 
 # Calculate BMI
 weight = sample_data["weight"]
 height = sample_data["height"]
-sample_data["BMI"] = 703 * weight / (height ** 2)
+sample_data["BMI"] = weight / ((height / 100) ** 2)
 
 # Convert to DataFrame
 person_df = pd.DataFrame([sample_data])
@@ -42,52 +41,76 @@ print(f"Predicted biological age: {predicted_age:.2f}")
 print("\nInput data:")
 print(person_df.T)
 
-# Load original training data to calculate percentiles
+# Load training data
 training_data = pd.read_csv("./backend/merged.csv")
 
-# Identify categorical and numerical features
-categorical_features = ['Gender', 'blood_pressure', 'cholesterol', 'diabetes', 
-                        'smoked_100_cigarettes', 'smoke', 'tobacco', 'weight_loss']
-numerical_features = [col for col in sample_data.keys() 
-                    if col not in categorical_features and col != 'BMI']
+print("\nHealth-Oriented Percentile Rankings:")
+print("--------------------------------------")
 
-# [HIGHLIGHT] Convert "Missing" entries to NaN and convert categorical features to numeric.
-for col in categorical_features:
-    if col in training_data.columns:
-        training_data[col] = pd.to_numeric(training_data[col], errors='coerce')
+# --- Physical Health: activity ↑, sedentary ↓ ---
+phys_good = ["freq_moderate_activity", "freq_intense_activity"]
+phys_bad = ["mins_sedentary"]
+if all(f in training_data.columns for f in phys_good + phys_bad):
+    good_vals = []
+    for f in phys_good:
+        val = sample_data[f]
+        dist = training_data[f]
+        good_vals.append((dist <= val).mean() * 100)  # higher = better
 
-print("\nPercentile Rankings (compared to population):")
-print("----------------------------------------------")
+    for f in phys_bad:
+        val = sample_data[f]
+        dist = training_data[f]
+        good_vals.append((dist >= val).mean() * 100)  # lower = better
 
-# For numerical features
-for feature in numerical_features:
-    if feature in training_data.columns:
-        value = sample_data[feature]
-        percentile = 100 * (training_data[feature] <= value).mean()
-        print(f"{feature}: {value} (Percentile: {percentile:.1f}%)")
+    physical_score = np.mean(good_vals)
+    print(f"Physical Activity Score: {physical_score:.1f}% (higher = more active, less sedentary)")
 
-# For categorical features
-for feature in categorical_features:
-    if feature in training_data.columns:
-        value = sample_data[feature]
-        try:
-            # [HIGHLIGHT] Convert sample categorical value to float for proper comparison.
-            numeric_value = float(value)
-            percentage = 100 * (training_data[feature] == numeric_value).mean()
-            print(f"{feature}: {value} (Percentage of population with same value: {percentage:.1f}%)")
-        except ValueError:
-            # Fallback to string comparison if conversion fails
-            percentage = 100 * (training_data[feature] == value).mean()
-            print(f"{feature}: {value} (Percentage of population with same value: {percentage:.1f}%)")
+# --- Sleep Score (higher sleep = better) ---
+sleep_features = ["sleep_weekdays", "sleep_weekends"]
+if all(f in training_data.columns for f in sleep_features):
+    sleep_vals = []
+    for f in sleep_features:
+        val = sample_data[f]
+        dist = training_data[f]
+        sleep_vals.append((dist <= val).mean() * 100)
+    sleep_score = np.mean(sleep_vals)
+    print(f"Sleep Score: {sleep_score:.1f}% (higher = more sleep)")
 
-# BMI percentile (calculated field)
-if 'BMI' in training_data.columns:
-    bmi_value = sample_data['BMI']
-    bmi_percentile = 100 * (training_data['BMI'] <= bmi_value).mean()
-    print(f"BMI: {bmi_value:.1f} (Percentile: {bmi_percentile:.1f}%)")
-else:
-    # Calculate BMI for training data if not already present
-    training_data['BMI'] = 703 * training_data['weight'] / (training_data['height'] ** 2)
-    bmi_value = sample_data['BMI']
-    bmi_percentile = 100 * (training_data['BMI'] <= bmi_value).mean()
-    print(f"BMI: {bmi_value:.1f} (Percentile: {bmi_percentile:.1f}%)")
+# --- Smokers Score (lower values = healthier) ---
+smoke_features = ["smoked_100_cigarettes", "smoke", "tobacco"]
+if all(f in training_data.columns for f in smoke_features):
+    smoker_vals = []
+    for f in smoke_features:
+        val = float(sample_data[f])
+        dist = pd.to_numeric(training_data[f], errors='coerce').fillna(0)
+        smoker_vals.append((dist >= val).mean() * 100)  # lower = healthier
+    smokers_score = np.mean(smoker_vals)
+    print(f"Smokers Score: {smokers_score:.1f}% (higher = smoked less)")
+
+# --- Blood Pressure (lower = healthier) ---
+if "blood_pressure" in training_data.columns:
+    val = float(sample_data["blood_pressure"])
+    dist = pd.to_numeric(training_data["blood_pressure"], errors='coerce')
+    percentile = (dist >= val).mean() * 100
+    print(f"Blood Pressure Score: {percentile:.1f}% (higher = healthier)")
+
+# --- Cholesterol (lower = healthier) ---
+if "cholesterol" in training_data.columns:
+    val = float(sample_data["cholesterol"])
+    dist = pd.to_numeric(training_data["cholesterol"], errors='coerce')
+    percentile = (dist >= val).mean() * 100
+    print(f"Cholesterol Score: {percentile:.1f}% (higher = healthier)")
+
+# --- Alcohol (lower frequency = healthier) ---
+if "freq_alcohol" in training_data.columns:
+    val = sample_data["freq_alcohol"]
+    dist = pd.to_numeric(training_data["freq_alcohol"], errors='coerce')
+    percentile = (dist >= val).mean() * 100
+    print(f"Alcohol Use Score: {percentile:.1f}% (higher = drink less frequently)")
+
+# --- BMI (lower within healthy range = better) ---
+if "BMI" in training_data.columns:
+    val = sample_data["BMI"]
+    dist = training_data["BMI"]
+    percentile = (dist >= val).mean() * 100
+    print(f"BMI Score: {percentile:.1f}% (higher = healthier BMI)")
