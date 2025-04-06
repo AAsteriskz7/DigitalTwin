@@ -373,7 +373,7 @@ function DigitalTwinPage() {
               className="secondary-button lifestyle-choice" 
               onClick={() => startSlideshow(false)}
             >
-              Optimize My Lifestyle
+              Change My Lifestyle
             </button>
           </div>
           <button 

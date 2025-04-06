@@ -18,7 +18,7 @@ function HomePage() {
        <br /> Step into the future of proactive care, powered by intelligent technology.
       </h4>
 
-      <button className="demo-btn" onClick={() => navigate('/form')}>
+      <button className="demo-btn" onClick={() => navigate('/dataone')}>
         Demo
       </button>
     </div>

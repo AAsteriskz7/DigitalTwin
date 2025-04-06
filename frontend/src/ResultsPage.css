@@ -1,115 +1,140 @@
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&display=swap');
 
-/* Full-screen container */
+/* Base styles */
+*, *::before, *::after {
+  box-sizing: border-box; /* Apply border-box globally */
+}
+
 body, html {
   margin: 0;
   padding: 0;
   min-height: 100vh;
   overflow-x: hidden;
   background-color: #f9f9f9;
+  font-family: 'Unbounded', sans-serif;
 }
 
+/* Main container */
 .results-container {
   max-width: 1200px;
   margin: 40px auto;
-  padding: 40px;
-  font-family: 'Unbounded', sans-serif;
-  color: #000;
-  background-color: white;
-  border-radius: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 30px 40px;
+  color: #333;
+  background-color: #fcfbf5;
+  border-radius: 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
   position: relative;
-  overflow: visible;
+  overflow: hidden;
+  z-index: 1;
+}
+/* Add specific classes for states if needed for overrides */
+.results-container.loading-state,
+.results-container.error-state,
+.results-container.no-results-state {
+    /* Styles specific to these states */
+    min-height: 400px; /* Ensure container has height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Enhanced blurred background circles */
-.results-container::before {
-  content: "";
-  position: fixed;
-  top: -10%;
-  left: -10%;
-  width: 70vw;
-  height: 70vh;
-  background: #47d1ff;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.35;
-  z-index: -1;
-  pointer-events: none;
-}
-
+/* Remove these background circles from results container */
+.results-container::before,
 .results-container::after {
-  content: "";
+  content: none; /* Disable these pseudo-elements */
+}
+
+/* Add explicit blur elements to the page background */
+.blur {
   position: fixed;
-  bottom: -10%;
-  right: -10%;
-  width: 70vw;
-  height: 70vh;
-  background: #22f7e2;
   border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.35;
-  z-index: -1;
+  filter: blur(100px);
+  opacity: 0.4;
+  z-index: 0;
   pointer-events: none;
 }
 
+.blur1 {
+  top: -100px;
+  left: -100px;
+  width: 300px;
+  height: 300px;
+  background: #29b6f6;
+}
+
+.blur2 {
+  bottom: -100px;
+  left: 100px;
+  width: 300px;
+  height: 300px;
+  background: #29b6f6;
+}
+
+.blur3 {
+  top: 50%;
+  right: -150px;
+  width: 400px;
+  height: 400px;
+  background: #29b6f6;
+  transform: translateY(-50%);
+}
+
+/* Header */
 .results-header {
-  font-size: 42px;
+  font-size: 36px;
   font-weight: 700;
   color: #000;
   text-align: center;
-  margin-bottom: 40px;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 35px;
 }
 
 .results-content {
   display: grid;
+  /* Use 3 equal columns on wider screens */
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  position: relative;
-  z-index: 2;
+  gap: 25px; /* Keep the gap */
   margin-top: 40px;
+  align-items: start; /* Align items to the start of the grid cell */
 }
 
-/* Health Bar Styling */
+/* --- Health Bar Styling (Labels changed in JS) --- */
 .health-bar-container {
-  margin: 40px 0;
+  margin: 30px 0 40px;
   text-align: center;
-  position: relative;
-  z-index: 2;
-  padding: 30px;
-  background-color: white;
-  border-radius: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  background-color: #fdfdfd;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
-
 .health-bar {
-  height: 16px;
-  background: linear-gradient(to right, #14d0f6, #f39c12, #e74c3c);
-  border-radius: 10px;
+  height: 14px;
+  /* Green -> Yellow -> Orange -> Red */
+  background: linear-gradient(to right, #28a745, #ffc107, #fd7e14, #dc3545);
+  border-radius: 7px;
   position: relative;
-  margin-bottom: 15px;
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
-
 .health-marker {
-  width: 20px;
-  height: 30px;
-  background-color: #14d0f6;
-  border-radius: 5px;
+  width: 10px;
+  height: 24px;
+  background-color: #333;
+  border-radius: 3px;
   position: absolute;
-  top: -7px;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid white;
 }
-
 .health-bar-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
-  color: #3a3a3a;
+  font-size: 13px;
+  color: #555;
   font-weight: 500;
+  padding: 0 5px;
 }
 
 /* Avatar and Percentiles Container */
@@ -117,320 +142,419 @@ body, html {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
-  margin: 50px 0;
+  margin: 40px 0;
 }
 
 /* Avatar Styling */
 .avatar-container {
-  padding: 30px;
+  padding: 25px;
   background: white;
-  border-radius: 20px;
+  border-radius: 15px;
   text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   position: relative;
-  z-index: 2;
-  height: fit-content;
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
-
 .avatar-container h3 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   color: #000;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
+/* Avatar Visual Container (coordinate parent) */
 .avatar-visual {
-  position: relative;
-  width: 300px;
-  height: 500px;
-  margin: 0 auto;
+  position: relative; /* Crucial for absolute positioning of indicators */
+  width: 280px;
+  height: 450px;
+  margin: 0 auto 20px;
 }
-
+/* Inner div to center the image */
 .custom-avatar {
-  position: relative;
+  position: relative; /* Can be relative or static */
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
 .avatar-image {
-  width: 100%;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto; /* Let height control */
   height: 100%;
   object-fit: contain;
 }
 
-/* Risk indicators */
+/* --- MODIFIED: Risk Indicator Base & Colors --- */
 .risk-indicator {
-  position: absolute;
-  width: 24px;
-  height: 24px;
+  position: absolute; /* Position is set by inline style from JS */
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2;
-  transition: all 0.3s ease;
+  z-index: 10;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
-
 .risk-indicator:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
+  z-index: 11;
+  border-color: white;
 }
 
-.risk-low {
-  background-color: rgba(34, 247, 226, 0.7);
+/* --- MODIFIED: Risk level colors matching new percentile scale --- */
+.risk-low { /* Good Percentiles (80+) */
+  background-color: rgba(40, 167, 69, 0.75); /* #28a745 Dark Green */
+}
+.risk-medium { /* Average Percentiles (50-79) */
+  background-color: rgba(255, 193, 7, 0.75); /* #ffc107 Yellow */
+  /* Or Orange: rgba(253, 126, 20, 0.75); */ /* #fd7e14 */
+}
+.risk-high { /* Low Percentiles (<50) */
+  background-color: rgba(220, 53, 69, 0.75); /* #dc3545 Red */
 }
 
-.risk-medium {
-  background-color: rgba(20, 208, 246, 0.7);
-}
-
-.risk-high {
-  background-color: rgba(71, 209, 255, 0.9);
-}
-
+/* --- Indicator Line Base Style --- */
 .indicator-line {
   position: absolute;
   height: 2px;
-  background-color: #333;
-  z-index: 1;
+  z-index: -1;
+  pointer-events: none;
 }
+/* Match line color to risk level */
+.risk-low .indicator-line { background-color: rgba(40, 167, 69, 0.9); } /* Dark Green */
+.risk-medium .indicator-line { background-color: rgba(255, 193, 7, 0.9); } /* Yellow */
+/* .risk-medium .indicator-line { background-color: rgba(253, 126, 20, 0.9); } */ /* Orange */
+.risk-high .indicator-line { background-color: rgba(220, 53, 69, 0.9); } /* Red */
 
+/* --- Tooltip Positioning & Styling --- */
 .risk-tooltip {
   position: absolute;
-  background-color: white;
-  padding: 10px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  width: 150px;
+  background-color: rgba(255, 255, 255, 0.97); /* Slightly less transparent */
+  backdrop-filter: blur(4px);
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  width: 170px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 3;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 20;
+  text-align: left;
+  font-size: 13px;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
 }
-
-.risk-indicator:hover .risk-tooltip {
-  opacity: 1;
+/* Tooltip Triangle */
+.risk-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.97) transparent transparent transparent;
 }
-
-.risk-title {
+/* Tooltip Text */
+.risk-tooltip .risk-title {
   font-weight: 600;
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
   color: #000;
+  font-size: 1.05em;
+}
+.risk-tooltip p {
+  margin: 0;
+  font-size: 0.95em;
+  color: #333;
+  line-height: 1.4;
+}
+.risk-indicator:hover .risk-tooltip {
+  opacity: 1;
+  visibility: visible;
 }
 
-/* Position the risk indicators */
-.heart-indicator {
-  top: 40%;
-  left: 50%;
+/* --- MODIFIED: Specific Indicator Styling (NO top/left here) --- */
+/* --- NOTE: Adjust line properties only, based on JS coordinates! --- */
+
+.heart-indicator .indicator-line {
+  width: 40px;
+  transform: rotate(-50deg);
+  top: 50%; left: 100%; /* Start right edge */
+  transform-origin: left center;
+}
+.lungs-indicator .indicator-line {
+  width: 35px;
+  transform: rotate(45deg);
+  top: 50%; right: 100%; /* Start left edge */
+  transform-origin: right center;
+}
+.brain-indicator .indicator-line {
+  width: 28px;
+  transform: rotate(90deg);
+  top: 100%; left: 50%; /* Start bottom center */
+  transform-origin: top center;
+}
+.diabetes-indicator .indicator-line {
+  width: 45px;
+  transform: rotate(-35deg);
+  top: 50%; left: 100%; /* Start right edge */
+  transform-origin: left center;
+}
+.joints-indicator .indicator-line {
+  width: 40px;
+  transform: rotate(60deg);
+  top: 50%; right: 100%; /* Start left edge */
+  transform-origin: right center;
 }
 
-.lungs-indicator {
-  top: 35%;
-  left: 35%;
-}
-
-.brain-indicator {
-  top: 10%;
-  left: 50%;
-}
-
-.diabetes-indicator {
-  top: 50%;
-  left: 50%;
-}
-
-.joints-indicator {
-  top: 75%;
-  margin-bottom: 15px;
-}
-
-.age-comparison {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 15px;
-}
-
-.age-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.age-label {
-  font-size: 14px;
-  color: #3a3a3a;
-  margin-bottom: 5px;
-}
-
-.age-value {
-  font-size: 24px;
-  font-weight: 700;
-  color: #000;
-}
-
-/* Results Blocks Styling */
+/* --- Results Blocks Styling --- */
 .result-block {
   background-color: white;
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
-  border: none;
+  border-radius: 15px;
+  padding: 20px 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid #f0f0f0;
+  min-height: 150px; /* Ensure blocks have some minimum height */
+  display: flex; /* Use flexbox for content alignment */
+  flex-direction: column;
+  justify-content: space-between; /* Space out title, value, text */
 }
-
 .result-block:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(20, 208, 246, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(20, 208, 246, 0.1);
 }
-
 .result-block h3 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
-  color: #000;
-  margin-bottom: 15px;
+  color: #333;
+  margin-bottom: 12px;
 }
-
 .result-value {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
-  color: #14d0f6;
-  margin: 15px 0;
+  margin: 10px 0;
+  flex-grow: 1; /* Allow value to take space */
+  display: flex;
+  align-items: center; /* Center value vertically if needed */
+}
+/* Color coding for age difference */
+.result-value.positive-diff { color: #28a745; } /* Dark Green */
+.result-value.negative-diff { color: #fd7e14; } /* Orange */
+.result-block p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+  margin-top: 5px;
 }
 
-/* Button Styling */
+/* --- Button Styling (Reverted Text in JS) --- */
 .button-container {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 15px;
   margin-top: 40px;
-  position: relative;
-  z-index: 2;
 }
-
 .nav-button {
-  padding: 12px 28px;
+  padding: 10px 25px;
   border: none;
-  border-radius: 20px;
+  border-radius: 25px;
   font-family: 'Unbounded', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: white;
-  color: #14d0f6;
-  border: 2px solid #14d0f6;
+  transition: all 0.2s ease;
+  background-color: #f0f5f8;
+  color: #333;
+  border: 1px solid #e0e5e8;
 }
-
 .nav-button:hover {
-  background-color: rgba(20, 208, 246, 0.1);
+  background-color: #e0eaf0;
   transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
 }
-
+/* Primary button style */
 .primary-button {
-  background-color: #14d0f6;
+  /* Use a solid color consistent with theme */
+  background-color: #14d0f6; /* Blue/Teal */
   color: white;
   border: none;
+  box-shadow: 0 4px 12px rgba(20, 208, 246, 0.2);
 }
-
 .primary-button:hover {
-  background-color: #04dcd1;
-  box-shadow: 0 5px 15px rgba(20, 208, 246, 0.3);
+  background-color: #11b8d0; /* Darker shade */
+  box-shadow: 0 6px 15px rgba(20, 208, 246, 0.3);
+  transform: translateY(-3px);
 }
 
-/* Avatar and Percentile Layout */
-.avatar-percentile-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-/* Percentile Scores Styling */
+/* --- Percentile Scores Styling --- */
 .percentile-container {
-  padding: 30px;
+  padding: 25px;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 2;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
-
 .percentile-container h3 {
   font-size: 22px;
   font-weight: 600;
   color: #000;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   text-align: center;
 }
-
+.percentile-subtext {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 400;
+}
 .percentile-scores {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 }
-
-.percentile-item {
-  margin-bottom: 15px;
-}
-
+.percentile-item { }
 .percentile-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
+  align-items: baseline;
+  margin-bottom: 6px;
 }
-
 .percentile-label {
   font-weight: 500;
   font-size: 14px;
+  color: #333;
 }
-
 .percentile-value {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
 }
-
 .percentile-bar-bg {
   width: 100%;
-  height: 12px;
-  background-color: #f1f1f1;
-  border-radius: 6px;
+  height: 10px;
+  background-color: #e9edef;
+  border-radius: 5px;
   overflow: hidden;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
 }
-
 .percentile-bar-fill {
   height: 100%;
-  border-radius: 6px;
-  transition: width 0.5s ease;
+  border-radius: 5px;
+  transition: width 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
-
 .percentile-note {
   display: block;
   font-size: 12px;
-  color: #666;
+  color: #777;
   font-style: italic;
+  font-weight: 400;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .results-content {
-    grid-template-columns: 1fr;
-  }
-  
-  .button-container {
-    flex-direction: column;
+/* Basic Loading Spinner */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
     align-items: center;
-  }
-  
-  .nav-button {
-    width: 100%;
-    margin: 5px 0;
+    min-height: 200px;
+}
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #14d0f6; /* Use theme color */
+    animation: spin 1s ease infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error Message Styling */
+.error-message {
+    color: #dc3545; /* Red */
+    text-align: center;
+    font-weight: 500;
+    margin: 20px auto; /* Center */
+    background-color: rgba(220, 53, 69, 0.05);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(220, 53, 69, 0.1);
+    max-width: 80%; /* Prevent it being too wide */
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 992px) { /* Adjust breakpoint */
+  .results-content {
+      /* Change to 2 columns earlier */
+      grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 900px) {
-  .avatar-percentile-container {
-    grid-template-columns: 1fr;
+  .results-container {
+      margin: 20px;
+      padding: 20px 25px;
   }
+  .avatar-percentile-container {
+    grid-template-columns: 1fr; /* Stack avatar and percentiles */
+    gap: 25px;
+  }
+  .avatar-visual {
+      /* Adjust size for smaller screens if needed */
+      /* width: 250px; */
+      /* height: 400px; */
+  }
+}
+
+@media (max-width: 768px) {
+  .results-header {
+      font-size: 30px;
+  }
+  .results-content {
+    grid-template-columns: 1fr; /* Stack result blocks */
+  }
+  .button-container {
+    flex-direction: column; /* Stack buttons */
+    align-items: stretch; /* Make buttons full width */
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+    .results-container {
+        margin: 15px;
+        padding: 15px 20px;
+        border-radius: 15px;
+    }
+     .results-header {
+        font-size: 26px;
+    }
+    .avatar-visual {
+        width: 220px; /* Smaller avatar on mobile */
+        height: 350px;
+    }
+    .risk-tooltip {
+        width: 140px;
+        font-size: 12px;
+    }
+    .result-value {
+        font-size: 28px;
+    }
+    .nav-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
 }
