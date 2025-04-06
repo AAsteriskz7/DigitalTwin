@@ -12,12 +12,6 @@
   position: relative;
   overflow: hidden;
 }
-.animated-twin {
-  margin-left: 2px;
-  color: #000;
-  font-weight: 700;
-}
-
 
 .title {
   font-size: 64px;
