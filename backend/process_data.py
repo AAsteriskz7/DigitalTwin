@@ -67,52 +67,53 @@ invalid_codes = {
     "height": ["7777", "9999", "."],
 }
 
-# Define categorical and numeric columns
-categorical_cols = ["Gender", "blood_pressure", "cholesterol", "diabetes", "smoked_100_cigarettes", "smoke", "weight_loss", "tobacco"]
-numeric_cols = ["Age", "freq_alcohol", "freq_moderate_activity", "freq_intense_activity", "mins_sedentary", "sleep_weekdays", 
-                "sleep_weekends", "weight", "height"]
+# Define categorical and numeric columns.
+categorical_cols = [
+    "Gender", "blood_pressure", "cholesterol", "diabetes",
+    "smoked_100_cigarettes", "smoke", "weight_loss", "tobacco"
+]
+numeric_cols = [
+    "Age", "freq_alcohol", "freq_moderate_activity", "freq_intense_activity",
+    "mins_sedentary", "sleep_weekdays", "sleep_weekends", "weight", "height"
+]
 
-# Replace invalid codes with NaN and convert the columns to appropriate types
+# Replace invalid codes with NaN.
 for col, codes in invalid_codes.items():
     if col in merged_df.columns:
         merged_df[col] = merged_df[col].replace(codes, np.nan)
         
-# Convert to appropriate type AFTER replacing invalid values
+# Convert numeric columns to appropriate type.
 for col in merged_df.columns:
-    if col == "ID":  # Skip ID column
+    if col == "ID":  # Skip ID column.
         continue
     elif col in numeric_cols:
         merged_df[col] = pd.to_numeric(merged_df[col], errors="coerce")
 
-# Fill missing values: -1 for numeric, "Missing" for categorical
+# Fill missing values: -1 for numeric, "Missing" for categorical.
 for col in merged_df.columns:
-    if col == "ID":  # Skip ID column
+    if col == "ID":
         continue
     elif col in categorical_cols:
         merged_df[col] = merged_df[col].fillna("Missing")
-    else:  # Numeric columns
+    else:
         merged_df[col] = merged_df[col].fillna(-1)
 
-# Compute BMI using weight (lb) and height (in):
-# Convert weight to kilograms: weight (kg) = weight (lb) / 2.205
-# Convert height to meters: height (m) = height (in) * 0.0254
-# Handle cases where weight or height might be -1 (missing)
+# Ensure all categorical columns have string values.
+for col in categorical_cols:
+    merged_df[col] = merged_df[col].astype(str)
+
+# Compute BMI using weight and height.
 weight_mask = merged_df["weight"] > 0
 height_mask = merged_df["height"] > 0
 valid_mask = weight_mask & height_mask
 
-# Initialize BMI column with -1 (missing)
 merged_df["BMI"] = -1
-
-# Calculate BMI only for rows with valid weight and height
 merged_df.loc[valid_mask, "BMI"] = (
-    (merged_df.loc[valid_mask, "weight"] / 2.205) / 
-    ((merged_df.loc[valid_mask, "height"] * 0.0254) ** 2)
+    merged_df.loc[valid_mask, "weight"] / ((merged_df.loc[valid_mask, "height"] / 100) ** 2)
 )
 
 # Optionally drop the original weight and height columns.
-merged_df.drop(["weight", "height"], axis=1, inplace=True)
+# merged_df.drop(["weight", "height"], axis=1, inplace=True)
 
-# Save the cleaned merged DataFrame (with BMI) to CSV.
 merged_df.to_csv(output_file, index=False)
 print(f"Merged CSV saved as {output_file}")
