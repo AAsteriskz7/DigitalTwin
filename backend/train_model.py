@@ -16,10 +16,13 @@ initial_count = len(df)
 df = df.dropna()
 
 # Identify categorical columns based on data types and values
-categorical_cols = ['Gender', 'blood_pressure', 'cholesterol', 'diabetes', 'smoked_100_cigarettes', 'smoke', 'tobacco', 'weight_loss']
-# Ensure categorical columns are treated as category type
+categorical_cols = ['Gender', 'blood_pressure', 'cholesterol', 'diabetes', 
+                    'smoked_100_cigarettes', 'smoke', 'tobacco', 'weight_loss']
+
+# Convert categorical columns: ensure all values are strings
 for col in categorical_cols:
     if col in df.columns:
+        df[col] = df[col].astype(str).replace("nan", "Missing")
         df[col] = df[col].astype('category')
 
 # Print value counts for categorical columns to verify "Missing" values
@@ -30,14 +33,14 @@ for col in categorical_cols:
 
 # Define the target and features.
 # Exclude 'Age' (target) and 'ID' (identifier) from features.
-X = df.drop(["Age", "ID"], axis=1)
+X = df.drop(["Age", "ID", "height", "weight"], axis=1)
 y = df["Age"]
 
 # Get numerical columns
 numerical_cols = [col for col in X.columns if col not in categorical_cols]
 
-# Create preprocessor for categorical and numerical features
-# Using handle_unknown='ignore' to handle any new categories at prediction time
+# Create preprocessor for categorical and numerical features.
+# Use sparse_output=False instead of sparse=False.
 preprocessor = ColumnTransformer(
     transformers=[
         ('num', 'passthrough', numerical_cols),
@@ -52,7 +55,6 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Create and train the pipeline
-# XGBoost naturally handles -1 values as a special case
 pipeline = Pipeline([
     ('preprocessor', preprocessor),
     ('model', XGBRegressor(
@@ -91,3 +93,18 @@ model_filename = "./backend/model.pkl"
 with open(model_filename, "wb") as f:
     pickle.dump(pipeline, f)
 print(f"\nModel saved as {model_filename}")
+
+# Select a few samples from the test set
+n_examples = 5
+X_val_examples = X_test.iloc[:n_examples]
+y_true_examples = y_test.iloc[:n_examples]
+y_pred_examples = y_pred[:n_examples]
+
+# Invert preprocessing so you can see raw feature values alongside predictions
+print("\nValidation set examples (first {} rows):".format(n_examples))
+for i in range(n_examples):
+    print(f"\nExample {i+1}:")
+    print("Input features:")
+    print(X_val_examples.iloc[i].to_dict())
+    print(f"True Age: {y_true_examples.iloc[i]}")
+    print(f"Predicted Age: {y_pred_examples[i]:.2f}")
