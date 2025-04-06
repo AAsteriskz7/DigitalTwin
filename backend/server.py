@@ -66,7 +66,7 @@ def calculate_percentiles(person_data, predicted_age):
         for f in smoke_features:
             val = float(person_data[f])
             dist = pd.to_numeric(training_data[f], errors='coerce').fillna(0)
-            smoker_vals.append((dist >= val).mean() * 100)  # lower value = better, so invert
+            smoker_vals.append((dist <= val).mean() * 100)  # lower value = better
         smokers_score = np.mean(smoker_vals)
         percentiles["Smoking Habits"] = {
             "percentile": round(smokers_score, 1)
@@ -76,7 +76,7 @@ def calculate_percentiles(person_data, predicted_age):
     if "blood_pressure" in training_data.columns:
         val = float(person_data["blood_pressure"])
         dist = pd.to_numeric(training_data["blood_pressure"], errors='coerce')
-        bp_percentile = (dist >= val).mean() * 100
+        bp_percentile = (dist <= val).mean() * 100  # lower value = better
         percentiles["Blood Pressure"] = {
             "percentile": round(bp_percentile, 1)
         }
@@ -85,7 +85,7 @@ def calculate_percentiles(person_data, predicted_age):
     if "cholesterol" in training_data.columns:
         val = float(person_data["cholesterol"])
         dist = pd.to_numeric(training_data["cholesterol"], errors='coerce')
-        chol_percentile = (dist >= val).mean() * 100
+        chol_percentile = (dist <= val).mean() * 100  # lower value = better
         percentiles["Cholesterol"] = {
             "percentile": round(chol_percentile, 1)
         }
@@ -131,13 +131,17 @@ def predict():
         pipeline = load_model()
         predicted_age = float(pipeline.predict(person_df)[0])
         
+        # Average the input age and the predicted age
+        input_age = float(data["age"])
+        averaged_age = input_age * 0.75 + predicted_age * 0.25
+        
         # Calculate percentiles
-        percentiles = calculate_percentiles(data, predicted_age)
+        percentiles = calculate_percentiles(data, averaged_age)
         
         # Return prediction and percentiles
         return jsonify({
             "status": "success",
-            "predicted_age": round(predicted_age, 1),
+            "predicted_age": round(averaged_age, 0),
             "percentiles": percentiles
         })
     

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import './DataInput.css'; // Add styles here
+import React, { useState, useEffect } from 'react';
+import './DataInput.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function DataThree() {
   const [form, setForm] = useState({
@@ -10,8 +11,18 @@ function DataThree() {
     currentSmoker: '',
     smokedPast5Days: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
+
+  // Load any saved data from localStorage on component mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('formDataThree');
+    if (savedData) {
+      setForm(JSON.parse(savedData));
+    }
+  }, []);
 
   const handleChoice = (name, value) => {
     setForm((prev) => ({
@@ -27,10 +38,61 @@ function DataThree() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
-    navigate('/main');
+    
+    // Save current form data to localStorage
+    localStorage.setItem('formDataThree', JSON.stringify(form));
+    
+    try {
+      setIsSubmitting(true);
+      setError('');
+      
+      // Get data from all forms
+      const formDataOne = JSON.parse(localStorage.getItem('formDataOne') || '{}');
+      const formDataTwo = JSON.parse(localStorage.getItem('formDataTwo') || '{}');
+      
+      // Convert form values to appropriate format for the backend
+      const combinedData = {
+        // Basic information from form 1
+        age: Number(formDataOne.age),
+        Gender: formDataOne.sex == "male" ? "1" : "2",
+        weight: Number(formDataOne.weight),
+        height: Number(formDataOne.heightCm),
+        BMI: Number(formDataOne.weight) / ((Number(formDataOne.heightCm) / 100) ** 2), // Calculate BMI
+        
+        // Activity data from form 2
+        freq_moderate_activity: Number(formDataTwo.moderateActivity),
+        freq_intense_activity: Number(formDataTwo.intenseActivity),
+        mins_sedentary: Number(formDataTwo.sittingHours) * 60, // convert to minutes
+        sleep_weekdays: Number(formDataTwo.sleepWeekdays),
+        sleep_weekends: Number(formDataTwo.sleepWeekends),
+        
+        // Smoking and health data from form 3
+        smoked_100_cigarettes: form.smoked100Cigs === 'Yes' ? "1.0" : "2.0",
+        smoke: form.currentSmoker === 'Every day' ? "1.0" : form.currentSmoker === 'Some days' ? "2.0" : "3.0",
+        tobacco: form.smokedPast5Days === 'Yes' ? "1.0" : "2.0",
+        blood_pressure: form.highBloodPressure === 'Yes' ? "1.0" : "2.0", // Estimate
+        cholesterol: form.highCholesterol === 'Yes' ? "1.0" : "2.0", // Estimate
+        diabetes: "2.0",
+      };
+      
+      console.log('Sending data to backend:', combinedData);
+      
+      // Send the data to the backend
+      const response = await axios.post('http://localhost:5000/predict', combinedData);
+      
+      console.log('Response from backend:', response.data);
+      
+      // Navigate to results page with the response data
+      navigate('/results', { state: { formData: combinedData, resultData: response.data } });
+      
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setError('Failed to submit data. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const renderYesNo = (label, name) => (
@@ -78,7 +140,15 @@ function DataThree() {
 
         {renderYesNo("During the past 5 days, have you smoked tobacco?", "smokedPast5Days")}
 
-        <button className="submit-btn" type="submit">Continue</button>
+        {error && <p className="error-message">{error}</p>}
+        
+        <button 
+          className="submit-btn" 
+          type="submit" 
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Processing...' : 'Get Results'}
+        </button>
       </form>
     </div>
   );

@@ -1,52 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './ResultsPage.css';
-import axios from 'axios'; // You'll need to install axios: npm install axios
-
-// Dummy form data that would be submitted to the backend
-const dummyFormData = {
-  age: 35,
-  gender: "male",
-  weight: 75, // in kg
-  height: 175, // in cm
-  BMI: 24.5,
-  freq_moderate_activity: 3, // days per week
-  freq_intense_activity: 2, // days per week
-  mins_sedentary: 480, // minutes per day
-  sleep_weekdays: 7, // hours
-  sleep_weekends: 8, // hours
-  smoked_100_cigarettes: 0,
-  smoke: 0,
-  tobacco: 0,
-  blood_pressure: 120, // systolic
-  cholesterol: 180 // mg/dL
-};
-
-// Dummy backend response that simulates API response
-const dummyBackendResponse = {
-  status: "success",
-  predicted_age: 32.5, // biological age
-  percentiles: {
-    "Physical Activity": {
-      percentile: 78.3
-    },
-    "Sleep Quality": {
-      percentile: 65.2
-    },
-    "Smoking Habits": {
-      percentile: 92.1
-    },
-    "Blood Pressure": {
-      percentile: 72.4
-    },
-    "Cholesterol": {
-      percentile: 68.7
-    },
-    "BMI": {
-      percentile: 81.5
-    }
-  }
-};
+import axios from 'axios';
 
 function ResultsPage() {
   const navigate = useNavigate();
@@ -54,55 +9,42 @@ function ResultsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [resultData, setResultData] = useState(null);
-  const [useDummyData, setUseDummyData] = useState(false); // Add this line
   
   useEffect(() => {
-    // Get form data from location state
+    // Get data from location state (passed from DataThree)
     const formData = location.state?.formData;
+    const backendResponse = location.state?.resultData;
     
-    if (!formData) {
-      // If no form data, show a message but don't stop rendering
-      console.warn("No form data found in location state");
+    if (backendResponse && backendResponse.status === 'success') {
+      // If we have actual results from the backend, use them
+      const processedData = {
+        biologicalAge: backendResponse.predicted_age,
+        chronologicalAge: Number(formData.age),
+        healthScore: calculateHealthScore(backendResponse),
+        percentileScores: transformPercentiles(backendResponse.percentiles),
+        healthRisks: generateHealthRisks(backendResponse)
+      };
       
-      // Option 1: Show error (your current behavior)
-      if (!useDummyData) {
-        setError("No form data found. Please fill out the assessment form.");
-        setLoading(false);
-      } else {
-        // If using dummy data, proceed with dummy data
-        fetchResults(dummyFormData);
-      }
+      setResultData(processedData);
+      setLoading(false);
       return;
     }
     
-    // Call the backend API
+    if (!formData) {
+      // If no form data, show error message
+      console.warn("No form data found in location state");
+      setError("No form data found. Please fill out the assessment form.");
+      setLoading(false);
+      return;
+    }
+    
+    // Call the backend API if we have form data but no results yet
     fetchResults(formData);
-  }, [location.state, useDummyData]);
+  }, [location.state]);
   
   const fetchResults = async (formData) => {
     try {
       setLoading(true);
-
-      if (useDummyData) {
-        console.log("Using dummy data instead of API call");
-        setTimeout(() => {
-          const backendData = dummyBackendResponse;
-          
-          if (backendData.status === 'success') {
-            const processedData = {
-              biologicalAge: backendData.predicted_age,
-              chronologicalAge: Number(dummyFormData.age), // Get chronological age from form data
-              healthScore: calculateHealthScore(backendData),
-              percentileScores: transformPercentiles(backendData.percentiles),
-              healthRisks: generateHealthRisks(backendData)
-            };
-            
-            setResultData(processedData);
-            setLoading(false);
-          }
-        }, 1500); // Simulate API delay
-        return;
-      }
       
       // Replace with your actual backend URL
       const response = await axios.post('http://localhost:5000/predict', formData);
@@ -234,7 +176,7 @@ function ResultsPage() {
     );
   }
   
-  // Update your error display section to include a "Use Dummy Data" option
+  // Show error state
   if (error) {
     return (
       <div className="results-container">
@@ -242,29 +184,6 @@ function ResultsPage() {
         <p className="error-message">{error}</p>
         <div className="button-container">
           <button className="nav-button" onClick={() => navigate('/form')}>Back to Form</button>
-          <button 
-            className="nav-button primary-button" 
-            onClick={() => {
-              setUseDummyData(true);
-              setError(null);
-              setLoading(true);
-              // Process dummy data
-              setTimeout(() => {
-                const backendData = dummyBackendResponse;
-                const processedData = {
-                  biologicalAge: backendData.predicted_age,
-                  chronologicalAge: Number(dummyFormData.age),
-                  healthScore: calculateHealthScore(backendData),
-                  percentileScores: transformPercentiles(backendData.percentiles),
-                  healthRisks: generateHealthRisks(backendData)
-                };
-                setResultData(processedData);
-                setLoading(false);
-              }, 1500);
-            }}
-          >
-            Use Demo Data
-          </button>
         </div>
       </div>
     );
@@ -372,7 +291,7 @@ function ResultsPage() {
                     {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                   </span>
                   <span className="percentile-value" style={{ color: getPercentileColor(value) }}>
-                    {value.toFixed(1)}%
+                    {Math.round(value)}%
                   </span>
                 </div>
                 <div className="percentile-bar-bg">
@@ -385,7 +304,7 @@ function ResultsPage() {
                   ></div>
                 </div>
                 <span className="percentile-note">
-                  Healthier than {value.toFixed(1)}% of population
+                  Healthier than {Math.round(value)}% of population
                 </span>
               </div>
             ))}
@@ -423,42 +342,12 @@ function ResultsPage() {
       
       {/* Navigation Buttons */}
       <div className="button-container">
-        <button className="nav-button" onClick={() => navigate('/main')}>Go to Main Page</button>
-        <button className="nav-button" onClick={() => navigate('/form')}>Back to Form</button>
+        <button className="nav-button" onClick={() => navigate('/dataone')}>Back to Form</button>
         <button 
           className="nav-button primary-button" 
-          onClick={() => navigate('/recommendations', { state: { resultData } })}
+          onClick={() => navigate('/main', { state: { resultData } })}
         >
-          Next
-        </button>
-        {/* Add this to your button container */}
-        <button 
-          className="nav-button" 
-          onClick={() => {
-            setUseDummyData(!useDummyData);
-            setLoading(true);
-            if (!useDummyData) {
-              // Switch to dummy data
-              setTimeout(() => {
-                const backendData = dummyBackendResponse;
-                const processedData = {
-                  biologicalAge: backendData.predicted_age,
-                  chronologicalAge: Number(dummyFormData.age),
-                  healthScore: calculateHealthScore(backendData),
-                  percentileScores: transformPercentiles(backendData.percentiles),
-                  healthRisks: generateHealthRisks(backendData)
-                };
-                setResultData(processedData);
-                setLoading(false);
-                setError(null);
-              }, 1500); // Simulate API delay
-            } else {
-              // Switch back to real data
-              fetchResults(location.state?.formData || dummyFormData);
-            }
-          }}
-        >
-          {useDummyData ? "Use Real API" : "Use Test Data"}
+          Check Your Future
         </button>
       </div>
     </div>

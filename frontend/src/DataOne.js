@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './DataInput.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,12 +7,19 @@ function DataOne() {
     name: '',
     age: '',
     weight: '',
-    heightFeet: '',
-    heightInch: '',
+    heightCm: '',
     sex: '',
   });
 
   const navigate = useNavigate();
+
+  // Load any saved data from localStorage on component mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('formDataOne');
+    if (savedData) {
+      setForm(JSON.parse(savedData));
+    }
+  }, []);
 
   const handleChange = (e) => {
     setForm((prev) => ({
@@ -23,6 +30,10 @@ function DataOne() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Save to localStorage before navigating
+    localStorage.setItem('formDataOne', JSON.stringify(form));
+    
     console.log(form);
     navigate('/datatwo');
   };
@@ -35,18 +46,17 @@ function DataOne() {
 
       <h1 className="form-title">Your Information</h1>
       <form className="form-container" onSubmit={handleSubmit}>
-        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} />
-        <input name="age" type="number" placeholder="Age" value={form.age} onChange={handleChange} />
-        <input name="weight" type="number" placeholder="Weight (kgs)" value={form.weight} onChange={handleChange} />
-
+        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} required />
+        <input name="age" type="number" placeholder="Age" value={form.age} onChange={handleChange} required />
+        <input name="weight" type="number" placeholder="Weight (kgs)" value={form.weight} onChange={handleChange} required />
         <input
-  name="heightCm"
-  type="number"
-  placeholder="Height (cm)"
-  value={form.heightCm || ''}
-  onChange={handleChange}
-/>
-
+          name="heightCm"
+          type="number"
+          placeholder="Height (cm)"
+          value={form.heightCm || ''}
+          onChange={handleChange}
+          required
+        />
         <select name="sex" value={form.sex} onChange={handleChange}>
           <option value="">Select Sex</option>
           <option value="Male">Male</option>

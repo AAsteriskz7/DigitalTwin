@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './DataInput.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +14,14 @@ function DataTwo() {
 
   const navigate = useNavigate();
 
+  // Load any saved data from localStorage on component mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('formDataTwo');
+    if (savedData) {
+      setForm(JSON.parse(savedData));
+    }
+  }, []);
+
   const handleChange = (e) => {
     setForm((prev) => ({
       ...prev,
@@ -23,6 +31,10 @@ function DataTwo() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Save to localStorage before navigating
+    localStorage.setItem('formDataTwo', JSON.stringify(form));
+    
     console.log(form);
     navigate('/datathree'); // Navigate to the next page
   };

@@ -1,4 +1,15 @@
-/* styles.css for Digital Twin Page */
+.avatar-container {
+  position: relative;
+  width: 300px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+/* Main avatar sizing */
+.future-self-container .avatar-container {
+  width: 300px;
+  height: 500px;
+}/* Removed connection lines *//* styles.css for Digital Twin Page */
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&display=swap');
 
 /* Main container */
@@ -14,7 +25,7 @@
   overflow: hidden;
 }
 
-/* Blurred background circles - similar to homepage */
+/* Blurred background circles - changing from green to blue */
 .digital-twin-container::before {
   content: "";
   position: absolute;
@@ -37,7 +48,7 @@
   right: -100px;
   width: 400px;
   height: 400px;
-  background: #22f7e2;
+  background: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
   border-radius: 50%;
   filter: blur(90px);
   opacity: 0.46;
@@ -100,47 +111,54 @@
   gap: 15px;
 }
 
-/* Fullscreen slideshow styles */
-.slideshow-fullscreen-active {
-  overflow: hidden;
-}
-
+/* Fullscreen slideshow styles - full page mode */
 .slideshow-fullscreen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.97);
+  background-color: white; /* Changed from semi-transparent to solid white */
   z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
   overflow-y: auto;
+  padding: 0; /* Remove padding for full page experience */
 }
 
-.slideshow-fullscreen .slideshow-container {
+.slideshow-container {
   width: 100%;
-  max-width: 1000px;
+  height: 100%;
   position: relative;
-  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.slideshow-fullscreen .slideshow-header {
+.slideshow-centered-content {
+  width: 100%;
+  max-width: 900px;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.slideshow-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
-.slideshow-fullscreen .slideshow-title {
+.slideshow-title {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-.slideshow-fullscreen .slideshow-title h3 {
+.slideshow-title h3 {
   font-size: 28px;
   font-weight: 700;
   color: #000;
@@ -154,16 +172,22 @@
 }
 
 .slideshow-fullscreen .exit-button {
-  padding: 10px 20px;
+  width: 36px;
+  height: 36px;
   border: 2px solid #14d0f6;
-  border-radius: 20px;
+  border-radius: 50%;
   background-color: white;
   color: #14d0f6;
   font-family: 'Unbounded', sans-serif;
-  font-size: 16px;
+  font-size: 24px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+  padding: 0;
 }
 
 .slideshow-fullscreen .exit-button:hover {
@@ -171,23 +195,54 @@
   color: white;
 }
 
-.slideshow-fullscreen .slideshow-content {
+.slideshow-content {
   position: relative;
-  padding: 40px;
+  padding: 30px;
   background-color: white;
   border-radius: 20px;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  margin: 20px 0;
   min-height: 70vh;
+}
+
+.slideshow-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.slideshow-info h4 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+.slideshow-info p {
+  font-size: 18px;
+  color: #3a3a3a;
+  margin-bottom: 20px;
 }
 
 .slideshow-fullscreen .slideshow-progress {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 40px;
+  margin: 30px auto;
   position: relative;
   max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 0 30px; /* Add padding to space dots from edges */
+}
+
+.slideshow-fullscreen .progress-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  border: 3px solid #f0f0f0;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+  margin: 0 5px; /* Space between dots */
 }
 
 .slideshow-fullscreen .slideshow-progress::before {
@@ -220,8 +275,8 @@
 }
 
 .slideshow-fullscreen .progress-dot.completed {
-  border-color: #22f7e2;
-  background-color: #22f7e2;
+  border-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
+  background-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
 }
 
 .slideshow-fullscreen .progress-year {
@@ -253,8 +308,11 @@
   animation: pulse 1.5s infinite;
 }
 
-.slideshow-fullscreen .slideshow-slide {
+.slideshow-slide {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .slideshow-fullscreen .slideshow-slide h4 {
@@ -270,11 +328,12 @@
   margin-bottom: 30px;
 }
 
-.slideshow-fullscreen .slideshow-avatar-container {
+.slideshow-slide .slideshow-avatar-container {
   position: relative;
-  width: 350px;
-  height: 600px;
-  margin: 30px auto;
+  width: 300px; /* Increased from 250px */
+  height: 500px; /* Increased from 400px */
+  margin: 0 auto;
+  padding: 0 80px; /* Keep padding for text boxes */
 }
 
 .slideshow-fullscreen .avatar-image {
@@ -341,13 +400,14 @@
   line-height: 1.4;
 }
 
-.slideshow-fullscreen .slideshow-age-card {
+.slideshow-age-card {
   background-color: rgba(20, 208, 246, 0.1);
   border-radius: 20px;
-  padding: 25px;
-  margin-top: 30px;
+  padding: 20px;
   display: inline-block;
-  min-width: 350px;
+  width: 100%;
+  max-width: 350px;
+  margin-top: 15px;
 }
 
 .slideshow-fullscreen .age-comparison {
@@ -555,8 +615,8 @@
 }
 
 .progress-dot.completed {
-  border-color: #22f7e2;
-  background-color: #22f7e2;
+  border-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
+  background-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
 }
 
 .progress-year {
@@ -631,6 +691,13 @@
   animation: fadeInProblem 0.8s forwards;
 }
 
+.slideshow-fullscreen .problem-info {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInText 0.8s forwards;
+  animation-delay: 0.5s;
+}
+
 @keyframes fadeInProblem {
   from {
     opacity: 0;
@@ -639,6 +706,17 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -812,7 +890,7 @@
   z-index: 2;
 }
 
-/* Avatar section */
+/* Avatar section - keeping the original padding */
 .avatar-section {
   padding: 30px;
   background: white;
@@ -865,15 +943,15 @@
 }
 
 .risk-low {
-  background-color: rgba(34, 247, 226, 0.7);
+  background-color: rgba(20, 208, 246, 0.7); /* Changed to blue */
 }
 
 .risk-medium {
-  background-color: rgba(20, 208, 246, 0.7);
+  background-color: rgba(20, 208, 246, 0.7); /* Changed to blue */
 }
 
 .risk-high {
-  background-color: rgba(71, 209, 255, 0.9);
+  background-color: rgba(20, 208, 246, 0.9); /* Changed to blue */
 }
 
 .indicator-line {
@@ -1024,7 +1102,7 @@
   color: #000;
 }
 
-/* Habits section */
+/* Habits section - keeping the original padding */
 .habits-section {
   padding: 30px;
   background: white;
@@ -1076,6 +1154,7 @@
   outline: none;
   -webkit-appearance: none;
   appearance: none;
+  margin: 0; /* Remove default margins */
 }
 
 .slider-item input[type="range"]::-webkit-slider-thumb {
@@ -1087,6 +1166,7 @@
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-top: -6px; /* Center thumb on track */
 }
 
 .slider-item input[type="range"]::-moz-range-thumb {
@@ -1097,6 +1177,20 @@
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
+}
+
+.slider-item input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+.slider-item input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 10px;
 }
 
 .slider-item input[type="range"]::-webkit-slider-thumb:hover {
@@ -1110,6 +1204,7 @@
   margin-top: 5px;
   font-size: 12px;
   color: #3a3a3a;
+  padding: 0 2px; /* Add slight padding to align with slider edges */
 }
 
 /* Button group styles */
@@ -1195,14 +1290,14 @@
 }
 
 .secondary-button {
-  background-color: #22f7e2;
+  background-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
   color: white;
 }
 
 .secondary-button:hover {
   background-color: #04dcd1;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(34, 247, 226, 0.3);
+  box-shadow: 0 5px 15px rgba(20, 208, 246, 0.3); /* Changed from rgba(34, 247, 226, 0.3) to rgba(20, 208, 246, 0.3) */
 }
 
 /* Responsive adjustments */
@@ -1235,4 +1330,108 @@
     width: 100%;
     max-width: 300px;
   }
+}
+
+/* Add these CSS updates to your MainPage.css file */
+
+/* Remove multiple colors for risk indicators, use one blue color */
+.risk-low,
+.risk-medium,
+.risk-high,
+.risk-indicator {
+  background-color: rgba(20, 208, 246, 0.7);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Remove indicator lines */
+.indicator-line {
+  display: none;
+}
+
+/* Problem indicators for slideshow */
+.problem-indicator {
+  background-color: #14d0f6;
+  border: none;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Make slideshow problem descriptions more compact */
+.slideshow-problem .problem-info {
+  max-width: 160px;
+  padding: 10px;
+  font-size: 0.9em;
+}
+
+/* Position the problem info correctly based on left/right orientation */
+.problem-info-left {
+  margin-right: 0;
+  order: 1;
+  position: relative;
+}
+
+.problem-info-right {
+  margin-left: 0;
+  order: 2;
+  position: relative;
+}
+
+/* Make problem titles and descriptions more compact */
+.problem-info .problem-title {
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.problem-info .problem-description {
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+/* Problem left/right alignment */
+.problem-left {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.problem-right {
+  flex-direction: row;
+  text-align: left;
+}
+
+/* Adjust placement to prevent overlapping */
+.slideshow-problem {
+  margin-bottom: 15px;
+  z-index: 5;
+}
+
+.next-button {
+  margin-top: 20px;
+  padding: 12px 40px;
+  width: 200px;
+}
+
+/* Style for the lifestyle confirmation button */
+.lifestyle-sliders-buttons .primary-button {
+  min-width: 250px;
+}
+
+/* Ensure lifestyle sliders container has proper z-index */
+.lifestyle-sliders-container {
+  position: relative;
+  z-index: 1001;
+}
+
+/* Make avatar image properly centered in slideshow */
+.slideshow-avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.slideshow-avatar-container .avatar-image {
+  z-index: 1;
+  max-height: 500px;
+  width: auto;
 }

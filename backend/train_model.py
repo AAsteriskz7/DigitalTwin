@@ -8,7 +8,7 @@ from sklearn.pipeline import Pipeline
 import pickle
 
 # Load the merged CSV file (assumed to be created from your previous code)
-df = pd.read_csv("./backend/merged.csv")
+df = pd.read_csv("./merged.csv")
 initial_count = len(df)
 
 # No need to drop NA rows since we've filled them with -1 or "Missing"
@@ -17,7 +17,7 @@ df = df.dropna()
 
 # Identify categorical columns based on data types and values
 categorical_cols = ['Gender', 'blood_pressure', 'cholesterol', 'diabetes', 
-                    'smoked_100_cigarettes', 'smoke', 'tobacco', 'weight_loss']
+                    'smoked_100_cigarettes', 'smoke', 'tobacco']
 
 # Convert categorical columns: ensure all values are strings
 for col in categorical_cols:
@@ -89,7 +89,7 @@ for feature, importance in zip(all_features, importances):
     print(f"{feature}: {importance:.4f}")
 
 # Save the trained pipeline to a file
-model_filename = "./backend/model.pkl"
+model_filename = "./model.pkl"
 with open(model_filename, "wb") as f:
     pickle.dump(pipeline, f)
 print(f"\nModel saved as {model_filename}")

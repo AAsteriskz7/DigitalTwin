@@ -19,7 +19,6 @@ column_rename_map = {
     "SEQN": "ID",
     "RIAGENDR": "Gender",
     "RIDAGEYR": "Age",
-    "ALQ121": "freq_alcohol",
     "BPQ020": "blood_pressure",
     "BPQ080": "cholesterol",
     "DIQ010": "diabetes",
@@ -32,7 +31,6 @@ column_rename_map = {
     "SMQ040": "smoke",
     "SMQ681": "tobacco",
     "WHD010": "weight",
-    "WHQ070": "weight_loss",
     "WHD020": "height"
 }
 
@@ -50,7 +48,6 @@ merged_df.rename(columns=column_rename_map, inplace=True)
 invalid_codes = {
     "Gender": [".",],
     "Age": [".",],
-    "freq_alcohol": ["77", "99", "."],
     "blood_pressure": ["7.0", "9.0", "."],
     "cholesterol": ["7.0", "9.0", "."],
     "diabetes": ["7.0", "9.0", "."],
@@ -63,17 +60,16 @@ invalid_codes = {
     "smoke": ["7.0", "9.0", "."],
     "tobacco": ["7.0", "9.0", "."],
     "weight": ["7777", "9999", "."],
-    "weight_loss": ["7.0", "9.0", "."],
     "height": ["7777", "9999", "."],
 }
 
 # Define categorical and numeric columns.
 categorical_cols = [
     "Gender", "blood_pressure", "cholesterol", "diabetes",
-    "smoked_100_cigarettes", "smoke", "weight_loss", "tobacco"
+    "smoked_100_cigarettes", "smoke", "tobacco"
 ]
 numeric_cols = [
-    "Age", "freq_alcohol", "freq_moderate_activity", "freq_intense_activity",
+    "Age", "freq_moderate_activity", "freq_intense_activity",
     "mins_sedentary", "sleep_weekdays", "sleep_weekends", "weight", "height"
 ]
 
@@ -94,7 +90,12 @@ for col in merged_df.columns:
     if col == "ID":
         continue
     elif col in categorical_cols:
-        merged_df[col] = merged_df[col].fillna("Missing")
+        if col in ["smoked_100_cigarettes", "tobacco"]:
+            merged_df[col] = merged_df[col].fillna("2.0")
+        elif col == "smoke":
+            merged_df[col] = merged_df[col].fillna("3.0")
+        else:
+            merged_df[col] = merged_df[col].fillna("Missing")
     else:
         merged_df[col] = merged_df[col].fillna(-1)
 
