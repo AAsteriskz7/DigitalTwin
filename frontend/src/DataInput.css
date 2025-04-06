@@ -102,3 +102,41 @@ input, select {
   background: #29b6f6;
   transform: translateY(-50%);
 }
+
+.yes-no-buttons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  padding-top: 7px;
+}
+
+.yn-button {
+  padding: 6px 18px;
+  border: 2px solid #ccc;
+  border-radius: 999px;
+  background-color: white;
+  color: #007acc;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: 'Unbounded', sans-serif;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.yn-button:hover {
+  border-color: #007acc;
+  color: #005f9e;
+}
+
+.yn-button.active {
+  background-color: #007acc;
+  color: white;
+  border-color: #007acc;
+}
+
+.question-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px; /* space between question blocks */
+}
