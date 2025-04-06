@@ -14,7 +14,6 @@ function DataTwo() {
 
   const navigate = useNavigate();
 
-  // Load any saved data from localStorage on component mount
   useEffect(() => {
     const savedData = localStorage.getItem('formDataTwo');
     if (savedData) {
@@ -32,14 +31,12 @@ function DataTwo() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Save to localStorage before navigating
     localStorage.setItem('formDataTwo', JSON.stringify(form));
     
     console.log(form);
-    navigate('/datathree'); // Navigate to the next page
+    navigate('/datathree');
   };
 
-  // Utility function to create number options
   const renderOptions = (max) =>
     [...Array(max + 1)].map((_, i) => (
       <option key={i} value={i}>{i}</option>
@@ -54,7 +51,6 @@ function DataTwo() {
       <h1 className="form-title">Lifestyle Questions</h1>
       <form className="form-container" onSubmit={handleSubmit}>
 
-        {/* Physical Activity */}
         <label>Moderate-intensity activity (times/week)</label>
         <select name="moderateActivity" value={form.moderateActivity} onChange={handleChange}>
           <option value="">Select</option>
@@ -73,7 +69,6 @@ function DataTwo() {
           {renderOptions(16)}
         </select>
 
-        {/* Weight Goals */}
         <label>Have you tried losing weight in the past year?</label>
         <select
           name="weightLossAttempt"
@@ -85,7 +80,6 @@ function DataTwo() {
           <option value="No">No</option>
         </select>
 
-        {/* Sleep */}
         <label>Sleep hours on weekdays</label>
         <select name="sleepWeekdays" value={form.sleepWeekdays} onChange={handleChange}>
           <option value="">Select</option>

@@ -11,12 +11,10 @@ function ResultsPage() {
   const [resultData, setResultData] = useState(null);
   
   useEffect(() => {
-    // Get data from location state (passed from DataThree)
     const formData = location.state?.formData;
     const backendResponse = location.state?.resultData;
     
     if (backendResponse && backendResponse.status === 'success') {
-      // If we have actual results from the backend, use them
       const processedData = {
         biologicalAge: backendResponse.predicted_age,
         chronologicalAge: Number(formData.age),
@@ -31,14 +29,12 @@ function ResultsPage() {
     }
     
     if (!formData) {
-      // If no form data, show error message
       console.warn("No form data found in location state");
       setError("No form data found. Please fill out the assessment form.");
       setLoading(false);
       return;
     }
     
-    // Call the backend API if we have form data but no results yet
     fetchResults(formData);
   }, [location.state]);
   
@@ -46,17 +42,14 @@ function ResultsPage() {
     try {
       setLoading(true);
       
-      // Replace with your actual backend URL
       const response = await axios.post('http://localhost:5000/predict', formData);
       
-      // Process the backend response and format it for our UI
       const backendData = response.data;
       
       if (backendData.status === 'success') {
-        // Transform backend data to match our component's expected format
         const processedData = {
           biologicalAge: backendData.predicted_age,
-          chronologicalAge: Number(formData.age), // Get chronological age from form data
+          chronologicalAge: Number(formData.age),
           healthScore: calculateHealthScore(backendData),
           percentileScores: transformPercentiles(backendData.percentiles),
           healthRisks: generateHealthRisks(backendData)
@@ -74,25 +67,19 @@ function ResultsPage() {
     }
   };
   
-  // Helper functions to process backend data
   const calculateHealthScore = (backendData) => {
-    // Simple algorithm to calculate overall health score from percentiles
-    // You can adjust this based on your specific requirements
     const percentiles = backendData.percentiles;
     const values = Object.values(percentiles).map(item => item.percentile);
     
-    if (values.length === 0) return 50; // Default value
+    if (values.length === 0) return 50;
     
-    // Calculate average of all percentiles
     return Math.round(values.reduce((sum, val) => sum + val, 0) / values.length);
   };
   
   const transformPercentiles = (backendPercentiles) => {
-    // Transform backend percentiles to format expected by the UI
     const transformed = {};
     
     Object.entries(backendPercentiles).forEach(([key, data]) => {
-      // Convert "Physical Activity" to camelCase "physicalActivity"
       const camelKey = key.toLowerCase()
         .replace(/\s(.)/g, (_, char) => char.toUpperCase())
         .replace(/\s/g, '');
@@ -104,12 +91,9 @@ function ResultsPage() {
   };
   
   const generateHealthRisks = (backendData) => {
-    // Generate health risk assessments based on percentiles
-    // This is a simple example - you might want to implement more sophisticated logic
     const risks = {};
     const percentiles = backendData.percentiles;
     
-    // Heart health assessment
     if (percentiles["Blood Pressure"] || percentiles["Cholesterol"]) {
       const bpScore = percentiles["Blood Pressure"]?.percentile || 50;
       const cholScore = percentiles["Cholesterol"]?.percentile || 50;
@@ -123,7 +107,6 @@ function ResultsPage() {
       };
     }
     
-    // Lung health assessment
     if (percentiles["Smoking Habits"]) {
       const smokeScore = percentiles["Smoking Habits"]?.percentile || 50;
       
@@ -135,7 +118,6 @@ function ResultsPage() {
       };
     }
     
-    // Metabolic health assessment
     if (percentiles["BMI"]) {
       const bmiScore = percentiles["BMI"]?.percentile || 50;
       
@@ -150,37 +132,32 @@ function ResultsPage() {
     return risks;
   };
   
-  // Enhanced function to determine percentile color with more gradations
   const getPercentileColor = (value) => {
-    if (value >= 90) return '#00a1ff'; // Excellent - bright teal
-    if (value >= 75) return '#00a1ff'; // Very good - teal
-    if (value >= 60) return '#00b2ff'; // Good - blue
-    if (value >= 45) return '#00b2ff'; // Fair - darker blue
-    if (value >= 30) return '#00b3ff'; // Needs improvement - orange
-    if (value >= 15) return '#00b3ff'; // Poor - darker orange
-    return '#e74c3c';                  // Very poor - red
+    if (value >= 90) return '#00a1ff';
+    if (value >= 75) return '#00a1ff';
+    if (value >= 60) return '#00b2ff';
+    if (value >= 45) return '#00b2ff';
+    if (value >= 30) return '#00b3ff';
+    if (value >= 15) return '#00b3ff';
+    return '#e74c3c';
   };
   
-  // Helper function to determine risk level from percentile
   const getIndicatorRisk = (percentile) => {
     if (percentile >= 70) return 'low';
     if (percentile >= 40) return 'medium';
     return 'high';
   };
 
-  // Helper function to get risk description
   const getRiskDescription = (percentile) => {
     if (percentile >= 70) return 'Good health indicators';
     if (percentile >= 40) return 'Consider some lifestyle improvements';
     return 'Attention recommended in this area';
   };
 
-  // Calculate position on the health bar (0-100%)
   const healthBarPosition = resultData 
     ? Math.min(100, Math.max(0, ((resultData.biologicalAge / resultData.chronologicalAge) * 100 - 70)))
     : 50;
     
-  // Show loading state
   if (loading) {
     return (
       <div className="results-container">
@@ -190,7 +167,6 @@ function ResultsPage() {
     );
   }
   
-  // Show error state
   if (error) {
     return (
       <div className="results-container">
@@ -203,7 +179,6 @@ function ResultsPage() {
     );
   }
   
-  // If no result data yet, show message
   if (!resultData) {
     return (
       <div className="results-container">
@@ -215,19 +190,13 @@ function ResultsPage() {
       </div>
     );
   }
-  
-  
 
   return (
       <div className="results-wrapper">
-        {/* 🔵 Blur background elements */}
         <div className="white_background"></div>
 
-    
-        {/* Main content container */}
         <div className="results-container">
           <h2 className="results-header">Your Biological Age: {resultData.biologicalAge}</h2>
-      {/* Health Indicator Bar */}
       <div className="health-bar-container">
         <div className="health-bar">
           <div className="health-marker" style={{ left: `${healthBarPosition}%` }}></div>
@@ -239,16 +208,13 @@ function ResultsPage() {
       </div>
       
       <div className="avatar-percentile-container">
-        {/* Avatar Section */}
         <div className="avatar-container">
           <h3>Your Digital Twin</h3>
           
           <div className="avatar-visual">
-            {/* Custom avatar image */}
             <div className="custom-avatar">
               <img src="/avatar-image.png" alt="Digital Twin Avatar" className="avatar-image" />
               
-              {/* Health risk indicators */}
               {resultData.percentileScores?.bloodPressure && (
                 <div className={`risk-indicator heart-indicator risk-${getIndicatorRisk(resultData.percentileScores.bloodPressure)}`}>
                   <div className="indicator-line"></div>
@@ -322,7 +288,6 @@ function ResultsPage() {
           </div>
         </div>
         
-        {/* Percentile Scores Section */}
         <div className="percentile-container">
           <h3>Your Health Percentiles</h3>
           <div className="percentile-scores">
@@ -355,7 +320,6 @@ function ResultsPage() {
         </div>
       </div>
       
-      {/* Results Information Blocks */}
       <div className="results-content">
         <div className="result-block">
           <h3>Biological Age</h3>
@@ -383,7 +347,6 @@ function ResultsPage() {
         </div>
       </div>
       
-      {/* Navigation Buttons */}
       <div className="button-container">
         <button className="nav-button" onClick={() => navigate('/dataone')}>Back to Form</button>
         <button 

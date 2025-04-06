@@ -16,7 +16,6 @@ function DataThree() {
 
   const navigate = useNavigate();
 
-  // Load any saved data from localStorage on component mount
   useEffect(() => {
     const savedData = localStorage.getItem('formDataThree');
     if (savedData) {
@@ -41,50 +40,42 @@ function DataThree() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Save current form data to localStorage
     localStorage.setItem('formDataThree', JSON.stringify(form));
     
     try {
       setIsSubmitting(true);
       setError('');
       
-      // Get data from all forms
       const formDataOne = JSON.parse(localStorage.getItem('formDataOne') || '{}');
       const formDataTwo = JSON.parse(localStorage.getItem('formDataTwo') || '{}');
       
-      // Convert form values to appropriate format for the backend
       const combinedData = {
-        // Basic information from form 1
         age: Number(formDataOne.age),
         Gender: formDataOne.sex == "male" ? "1" : "2",
         weight: Number(formDataOne.weight),
         height: Number(formDataOne.heightCm),
-        BMI: Number(formDataOne.weight) / ((Number(formDataOne.heightCm) / 100) ** 2), // Calculate BMI
+        BMI: Number(formDataOne.weight) / ((Number(formDataOne.heightCm) / 100) ** 2),
         
-        // Activity data from form 2
         freq_moderate_activity: Number(formDataTwo.moderateActivity),
         freq_intense_activity: Number(formDataTwo.intenseActivity),
-        mins_sedentary: Number(formDataTwo.sittingHours) * 60, // convert to minutes
+        mins_sedentary: Number(formDataTwo.sittingHours) * 60,
         sleep_weekdays: Number(formDataTwo.sleepWeekdays),
         sleep_weekends: Number(formDataTwo.sleepWeekends),
         
-        // Smoking and health data from form 3
         smoked_100_cigarettes: form.smoked100Cigs === 'Yes' ? "1.0" : "2.0",
         smoke: form.currentSmoker === 'Every day' ? "1.0" : form.currentSmoker === 'Some days' ? "2.0" : "3.0",
         tobacco: form.smokedPast5Days === 'Yes' ? "1.0" : "2.0",
-        blood_pressure: form.highBloodPressure === 'Yes' ? "1.0" : "2.0", // Estimate
-        cholesterol: form.highCholesterol === 'Yes' ? "1.0" : "2.0", // Estimate
+        blood_pressure: form.highBloodPressure === 'Yes' ? "1.0" : "2.0",
+        cholesterol: form.highCholesterol === 'Yes' ? "1.0" : "2.0",
         diabetes: "2.0",
       };
       
       console.log('Sending data to backend:', combinedData);
       
-      // Send the data to the backend
       const response = await axios.post('http://localhost:5000/predict', combinedData);
       
       console.log('Response from backend:', response.data);
       
-      // Navigate to results page with the response data
       navigate('/results', { state: { formData: combinedData, resultData: response.data } });
       
     } catch (err) {

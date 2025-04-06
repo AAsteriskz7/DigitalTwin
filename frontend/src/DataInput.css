@@ -151,5 +151,5 @@ input, select {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 20px; /* space between question blocks */
+  margin-bottom: 20px;
 }

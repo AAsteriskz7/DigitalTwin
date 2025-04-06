@@ -1,65 +1,55 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './MainPage.css'; // Using your existing CSS file
+import './MainPage.css';
 
 function DigitalTwinPage() {
-  // Ref for slideshow timer tracking
   const slideshowStartTimeRef = useRef(null);
 
-  // State for user data based on your actual data model
   const [userData, setUserData] = useState({
     Age: 35,
-    Gender: "1", // 1 for male, 2 for female
-    blood_pressure: "1", // 1 = yes, 2 = no
-    cholesterol: "1", // 1 = yes, 2 = no
-    diabetes: "1", // 1 = yes, 2 = no
-    mins_sedentary: 8, // Sitting time in hours per day
-    physical_activity: 3, // Times per week
-    smoked_100_cigarettes: "1", // 1 = yes, 2 = no
-    smoke: "1", // 1 = every day, 2 = some days, 3 = not at all
-    tobacco: "1", // 1 = yes, 2 = no
-    weight_loss: "1", // 1 = yes, 2 = no
-    sleep: 7.8, // Combined sleep for weekdays and weekends
-    weight: 81.6, // in kilograms
-    height: 70.0, // in inches
-    BMI: 25.8 // calculated
+    Gender: "1",
+    blood_pressure: "1",
+    cholesterol: "1",
+    diabetes: "1",
+    mins_sedentary: 8,
+    physical_activity: 3,
+    smoked_100_cigarettes: "1",
+    smoke: "1",
+    tobacco: "1",
+    weight_loss: "1",
+    sleep: 7.8,
+    weight: 81.6,
+    height: 70.0,
+    BMI: 25.8
   });
 
-  // Load user data from localStorage on component mount
   useEffect(() => {
     try {
-      // Get data from all forms
       const formDataOne = JSON.parse(localStorage.getItem('formDataOne') || '{}');
       const formDataTwo = JSON.parse(localStorage.getItem('formDataTwo') || '{}');
       const formDataThree = JSON.parse(localStorage.getItem('formDataThree') || '{}');
       
-      // Check if we have data to work with
       if (Object.keys(formDataOne).length === 0) {
-        console.log('No form data found in localStorage');
-        return; // Use default values if no data exists
+        return;
       }
       
-      // Calculate average sleep
       const weekdaySleep = parseFloat(formDataTwo.sleepWeekdays) || 7;
       const weekendSleep = parseFloat(formDataTwo.sleepWeekends) || 8;
       const avgSleep = ((weekdaySleep * 5) + (weekendSleep * 2)) / 7;
       
-      // Calculate total physical activity (combined moderate and intense)
       const moderate = parseInt(formDataTwo.moderateActivity) || 0;
       const intense = parseInt(formDataTwo.intenseActivity) || 0;
       const totalActivity = moderate + intense;
       
-      // Convert height from cm to inches if provided
       const heightInInches = formDataOne.heightCm 
         ? parseFloat(formDataOne.heightCm) / 2.54 
         : 70.0;
       
-      // Transform the data to match userData format
       const transformedData = {
         Age: parseInt(formDataOne.age) || 35,
         Gender: formDataOne.sex === "Male" ? "1" : "2",
         blood_pressure: formDataThree.highBloodPressure === "Yes" ? "1" : "2",
         cholesterol: formDataThree.highCholesterol === "Yes" ? "1" : "2",
-        diabetes: "2", // Default to no
+        diabetes: "2",
         mins_sedentary: parseInt(formDataTwo.sittingHours) || 8,
         physical_activity: totalActivity,
         smoked_100_cigarettes: formDataThree.smoked100Cigs === "Yes" ? "1" : "2",
@@ -70,24 +60,18 @@ function DigitalTwinPage() {
         sleep: parseFloat(avgSleep.toFixed(1)) || 7.8,
         weight: parseFloat(formDataOne.weight) || 81.6,
         height: heightInInches,
-        BMI: 0 // Will be calculated by the useEffect
+        BMI: 0 
       };
       
-      // Update user data state
       setUserData(transformedData);
-      console.log('Loaded user data from forms:', transformedData);
       
     } catch (err) {
       console.error('Error loading form data:', err);
-      // Keep using default values if there's an error
     }
   }, []);
 
-  // State for view mode and navigation
   const [yearsInFuture, setYearsInFuture] = useState(10);
-  const [viewMode, setViewMode] = useState('single'); // 'single', 'all', 'slideshow'
-
-  // State for slideshow
+  const [viewMode, setViewMode] = useState('single');
   const [slideshowActive, setSlideshowActive] = useState(false);
   const [currentYearIndex, setCurrentYearIndex] = useState(0);
   const [keepSameLifestyle, setKeepSameLifestyle] = useState(true);
@@ -95,20 +79,15 @@ function DigitalTwinPage() {
   const [showLifestyleSliders, setShowLifestyleSliders] = useState(false);
   const [animatingProblems, setAnimatingProblems] = useState(false);
 
-  // State for lifestyle changes in slideshow
   const [slideshowUserData, setSlideshowUserData] = useState({});
 
-  // Health risk factors calculated based on user data and projection
   const [healthRisks, setHealthRisks] = useState({});
   const [biologicalAge, setBiologicalAge] = useState(0);
 
-  // Calculate projected age
   const projectedAge = userData.Age + yearsInFuture;
 
-  // Calculate BMI whenever weight or height changes
   useEffect(() => {
-    // BMI formula: weight(kg) / height(m)^2
-    const heightInMeters = userData.height * 0.0254; // Convert inches to meters
+    const heightInMeters = userData.height * 0.0254;
     const calculatedBMI = userData.weight / (heightInMeters ** 2);
     setUserData(prevData => ({
       ...prevData,
@@ -116,22 +95,19 @@ function DigitalTwinPage() {
     }));
   }, [userData.weight, userData.height]);
 
-  // Generate timeframe options based on current age
   const getTimeframeOptions = () => {
     const options = [];
-    const maxAge = 90;
+    const maxAge = 80;
     const currentAge = userData.Age;
     for (let i = 10; currentAge + i <= maxAge; i += 10) {
       options.push(i);
     }
-    // If no options (user is 80+), add at least one option
     if (options.length === 0 && currentAge < 100) {
       options.push(Math.min(10, 100 - currentAge));
     }
     return options;
   };
 
-  // Calculate biological age based on habits
   useEffect(() => {
     let ageDelta = 0;
     if (userData.blood_pressure === "1") ageDelta += 2;
@@ -149,7 +125,6 @@ function DigitalTwinPage() {
     setBiologicalAge(projectedAge + ageDelta);
   }, [userData, projectedAge]);
 
-  // Calculate health risks based on user data and projection year
   useEffect(() => {
     const calculateHealthRisks = () => {
       const risks = {};
@@ -210,81 +185,155 @@ function DigitalTwinPage() {
     setHealthRisks(calculateHealthRisks());
   }, [userData, yearsInFuture]);
 
-  // Calculate health risks for slideshow
   useEffect(() => {
     if (!slideshowActive) return;
     const calculateSlideshowHealthRisks = () => {
       const risks = {};
-      const dataToUse = userData; // Always use the current slider values from the main page
-      const slideshowYearsInFuture = getTimeframeOptions()[currentYearIndex] || yearsInFuture;
-      if (dataToUse.blood_pressure === "1" || dataToUse.cholesterol === "1" || dataToUse.smoke === "1") {
+      const data = userData;
+      const years = getTimeframeOptions()[currentYearIndex] || yearsInFuture;
+  
+      const getDescription = (riskType, years) => {
+        switch (riskType) {
+          case 'heart':
+            if (years < 15)
+              return "Occasional shortness of breath during brisk walks and slight fatigue when climbing stairs.";
+            else if (years < 25)
+              return "Even light jogging or playing sports leaves you noticeably winded.";
+            else if (years < 35)
+              return "Everyday tasks like shopping or family play become increasingly challenging as your heart struggles.";
+            else if (years < 45)
+              return "Simple chores and moderate exertion now frequently lead to fatigue and breathlessness.";
+            else if (years < 55)
+              return "Your heart condition significantly limits physical activity, demanding extra caution.";
+            else
+              return "Severe heart limitations make even minimal activity exhausting, with daily tasks becoming nearly impossible.";
+          case 'diabetes':
+            if (years < 15)
+              return "Minor energy dips after meals and occasional sluggishness start affecting your routine.";
+            else if (years < 25)
+              return "Frequent energy drops and slight dizziness make maintaining your pace more challenging.";
+            else if (years < 35)
+              return "Noticeable fatigue and unstable blood sugar levels begin to disrupt work and daily tasks.";
+            else if (years < 45)
+              return "Persistent tiredness and erratic energy increasingly hinder your social and physical activities.";
+            else if (years < 55)
+              return "Severe fluctuations in energy and sugar levels significantly curtail your lifestyle.";
+            else
+              return "Diabetes dominates your day—relentless fatigue and low stamina make even simple tasks overwhelming.";
+          case 'lungs':
+            if (years < 15)
+              return "Mild wheezing during exercise means you occasionally struggle to catch your breath.";
+            else if (years < 25)
+              return "Shortness of breath appears during everyday activities like walking or climbing stairs.";
+            else if (years < 35)
+              return "Diminishing lung capacity makes moderate exercise and prolonged activity noticeably challenging.";
+            else if (years < 45)
+              return "Breathing difficulties intensify, forcing frequent pauses even during light exertion.";
+            else if (years < 55)
+              return "Persistent respiratory issues now severely limit your activity, with minimal exertion causing discomfort.";
+            else
+              return "Advanced lung problems leave you with constant breathing struggles, even during simple movements.";
+          case 'brain':
+            if (years < 15)
+              return "Minor memory lapses and brief concentration issues occasionally interrupt your day.";
+            else if (years < 25)
+              return "Emerging focus difficulties begin to affect work and daily decision-making.";
+            else if (years < 35)
+              return "Cognitive decline becomes more evident, impacting both routine tasks and complex problem-solving.";
+            else if (years < 45)
+              return "More pronounced memory and concentration issues slow your mental processing and productivity.";
+            else if (years < 55)
+              return "Severe cognitive challenges make everyday tasks hard to manage, often leaving you overwhelmed.";
+            else
+              return "Advanced cognitive impairment drastically reduces mental clarity, making even simple activities exhausting.";
+          case 'joints':
+            if (years < 15)
+              return "You notice occasional stiffness after long periods of inactivity.";
+            else if (years < 25)
+              return "Mild joint pain starts to affect short bursts of physical activity.";
+            else if (years < 35)
+              return "Ongoing joint discomfort makes routine movements and sports increasingly challenging.";
+            else if (years < 45)
+              return "Chronic joint pain and stiffness significantly limit your mobility and ease of movement.";
+            else if (years < 55)
+              return "Persistent joint deterioration severely restricts mobility, making most physical activities painful.";
+            else
+              return "Advanced joint degeneration causes constant, debilitating pain, greatly hindering everyday tasks.";
+          default:
+            return "";
+        }
+      };
+      
+  
+      if (data.blood_pressure === "1" || data.cholesterol === "1" || data.smoke === "1") {
+        let riskLevel = 'medium';
+        if ((data.blood_pressure === "1" && data.cholesterol === "1") ||
+            (data.smoke === "1" && years >= 20)) {
+          riskLevel = 'high';
+        }
         risks.heart = {
-          risk: 'medium',
-          reason: (dataToUse.blood_pressure === "1" ? 'High blood pressure' : '') + 
-                  (dataToUse.cholesterol === "1" ? (dataToUse.blood_pressure === "1" ? ' and high cholesterol' : 'High cholesterol') : '') +
-                  (dataToUse.smoke === "1" ? ' combined with smoking' : '') +
-                  ' increases heart disease risk',
+          risk: riskLevel,
+          reason: getDescription('heart', years),
           location: 'chest'
         };
-        if ((dataToUse.blood_pressure === "1" && dataToUse.cholesterol === "1") || 
-            (dataToUse.smoke === "1" && slideshowYearsInFuture >= 20)) {
-          risks.heart.risk = 'high';
-        }
       }
-      if (dataToUse.diabetes === "1" || dataToUse.BMI > 30 || dataToUse.mins_sedentary > 600) {
+  
+      if (data.diabetes === "1" || data.BMI > 30 || data.mins_sedentary > 600) {
+        let riskLevel = 'medium';
+        if (data.diabetes === "1" && data.BMI > 30) {
+          riskLevel = 'high';
+        }
         risks.diabetes = {
-          risk: 'medium',
-          reason: dataToUse.diabetes === "1" ? 'Pre-diabetic condition' : 'Lifestyle factors increase diabetes risk',
+          risk: riskLevel,
+          reason: getDescription('diabetes', years),
           location: 'abdomen'
         };
-        if (dataToUse.diabetes === "1" && dataToUse.BMI > 30) {
-          risks.diabetes.risk = 'high';
-        }
       }
-      if (dataToUse.smoke === "1" || dataToUse.smoke === "2" || dataToUse.tobacco === "1") {
+  
+      if (data.smoke === "1" || data.smoke === "2" || data.tobacco === "1") {
+        let riskLevel = data.smoke === "1" ? 'high' : 'medium';
         risks.lungs = {
-          risk: dataToUse.smoke === "1" ? 'high' : 'medium',
-          reason: 'Smoking significantly impacts lung health',
+          risk: riskLevel,
+          reason: getDescription('lungs', years),
           location: 'lungs'
         };
       }
-      const avgSleep = (dataToUse.sleep * 7) / 7;
+  
+      const avgSleep = data.sleep;
       if (avgSleep < 6 || avgSleep > 9) {
+        let riskLevel = 'low';
+        if (years >= 30 && avgSleep < 5) riskLevel = 'medium';
         risks.brain = {
-          risk: 'low',
-          reason: 'Sleep quality impacts cognitive health',
+          risk: riskLevel,
+          reason: getDescription('brain', years),
           location: 'head'
         };
-        if (slideshowYearsInFuture >= 30 && avgSleep < 5) {
-          risks.brain.risk = 'medium';
-        }
       }
-      if (dataToUse.BMI > 30 || dataToUse.physical_activity < 10) {
+  
+      if (data.BMI > 30 || data.physical_activity < 10) {
+        let riskLevel = 'medium';
+        if (data.BMI > 35 && years >= 20) riskLevel = 'high';
         risks.joints = {
-          risk: 'medium',
-          reason: dataToUse.BMI > 30 ? 'Excess weight puts strain on joints' : 'Low activity increases joint problems',
+          risk: riskLevel,
+          reason: getDescription('joints', years),
           location: 'knees'
         };
-        if (dataToUse.BMI > 35 && slideshowYearsInFuture >= 20) {
-          risks.joints.risk = 'high';
-        }
       }
+  
       return risks;
     };
-    if (slideshowActive) {
-      setHealthRisks(calculateSlideshowHealthRisks());
-    }
+  
+    setHealthRisks(calculateSlideshowHealthRisks());
   }, [
     slideshowActive,
-    showLifestyleSliders,
     currentYearIndex,
-    keepSameLifestyle,
     userData,
-    slideshowUserData,
-    yearsInFuture
+    yearsInFuture,
+    showLifestyleSliders,
+    keepSameLifestyle,
+    slideshowUserData
   ]);
 
-  // Handle slider changes
   const handleSliderChange = (field, value) => {
     setUserData({
       ...userData,
@@ -292,7 +341,6 @@ function DigitalTwinPage() {
     });
   };
 
-  // Handle slider changes in slideshow
   const handleSlideshowSliderChange = (field, value) => {
     setSlideshowUserData({
       ...slideshowUserData,
@@ -300,14 +348,11 @@ function DigitalTwinPage() {
     });
   };
 
-  // Toggle between single projection and multiple futures
   const toggleViewMode = () => {
     setViewMode(viewMode === 'single' ? 'all' : 'single');
   };
 
-  // Start the lifestyle preview directly
   const startFuturePreview = () => {
-    // Use current slider values directly
     setSlideshowUserData({ ...userData });
     setCurrentYearIndex(0);
     setAnimatingProblems(true);
@@ -316,7 +361,6 @@ function DigitalTwinPage() {
     document.body.classList.add('slideshow-fullscreen-active');
   };
 
-  // Start slideshow after adjusting lifestyle
   const startSlideshowAfterChanges = () => {
     setShowLifestyleSliders(false);
     setSlideshowActive(true);
@@ -324,35 +368,33 @@ function DigitalTwinPage() {
     setAnimatingProblems(true);
   };
 
-  // Stop slideshow
   const stopSlideshow = () => {
     setSlideshowActive(false);
     document.body.classList.remove('slideshow-fullscreen-active');
   };
 
-  // Navigate to next slide
   const goToNextSlide = () => {
     const yearOptions = getTimeframeOptions();
     if (currentYearIndex < yearOptions.length - 1) {
-      // Reset animation state to trigger animations again
       setAnimatingProblems(false);
       setTimeout(() => {
         setCurrentYearIndex(prev => prev + 1);
         setAnimatingProblems(true);
-      }, 50); // Small delay to ensure state changes properly
+      }, 50);
     } else {
       setCurrentYearIndex(yearOptions.length);
     }
   };
 
   return (
+    <div className="results-wrapper">
+    <div className="white_background"></div>
     <div className="digital-twin-container">
       <div className="digital-twin-header">
         <h1>Your Digital Twin</h1>
-        <p>See how your habits today shape your future health</p>
+        <p>See how your habits today affect your biological age trajectory</p>
       </div>
 
-      {/* Future Timeframe Selection */}
       <div className="time-selector">
         <h2>See Your Future Self</h2>
         {viewMode === 'single' && !slideshowActive && !showLifestyleButtons && !showLifestyleSliders && (
@@ -363,20 +405,6 @@ function DigitalTwinPage() {
             >
               Show me a preview of my life
             </button>
-            <div className="year-selector">
-              <span>In</span>
-              <select
-                value={yearsInFuture}
-                onChange={(e) => setYearsInFuture(Number(e.target.value))}
-              >
-                {getTimeframeOptions().map(years => (
-                  <option key={years} value={years}>
-                    {years} years
-                  </option>
-                ))}
-              </select>
-              <span>You at age {projectedAge}</span>
-            </div>
           </div>
         )}
         {viewMode === 'all' && (
@@ -388,7 +416,6 @@ function DigitalTwinPage() {
               {getTimeframeOptions().map(years => (
                 <div key={years} className="future-card">
                   <h3>In {years} years</h3>
-                  <p>You at age {userData.Age + years}</p>
                   <div className="mini-avatar">
                     <div className="avatar-placeholder"></div>
                     <p>
@@ -404,9 +431,6 @@ function DigitalTwinPage() {
         )}
       </div>
 
-      {/* Removed the lifestyle selection modals */}
-
-      {/* Fullscreen Slideshow */}
       {slideshowActive && (
         <div className="slideshow-fullscreen">
           <div className="slideshow-container">
@@ -428,7 +452,6 @@ function DigitalTwinPage() {
                   <div className="slideshow-slide">
                     <div className="slideshow-info">
                       <h4>In {getTimeframeOptions()[currentYearIndex]} years</h4>
-                      <p>You at age {userData.Age + getTimeframeOptions()[currentYearIndex]}</p>
                       
                       <div className="slideshow-age-card">
                         <div className="age-comparison">
@@ -473,8 +496,8 @@ function DigitalTwinPage() {
                               }`}
                               style={{
                                 animationDelay: `${index * 1.2}s`,
-                                left: isLeft ? '-80px' : 'auto',  // Move text farther left
-                                right: !isLeft ? '-80px' : 'auto', // Move text farther right
+                                left: isLeft ? '-80px' : 'auto',
+                                right: !isLeft ? '-80px' : 'auto',
                                 top:
                                   risk.location === 'head'
                                     ? '10%'
@@ -485,7 +508,7 @@ function DigitalTwinPage() {
                                     : risk.location === 'abdomen'
                                     ? '55%'
                                     : '75%',
-                                marginTop: index > 0 ? `${(index % 3) * 50}px` : '0'  // Increased vertical spacing
+                                marginTop: index > 0 ? `${(index % 3) * 50}px` : '0'
                               }}
                             >
                               {isLeft ? (
@@ -562,57 +585,50 @@ function DigitalTwinPage() {
         </div>
       )}
 
-      {/* Main Content - Avatar and Sliders */}
       {viewMode === 'single' && !slideshowActive && !showLifestyleButtons && !showLifestyleSliders && (
         <div className="future-self-container">
           <div className="avatar-section">
-            <h3>Your Body at Age {projectedAge}</h3>
+            <h3>Your Body at Age {userData.Age}</h3>
             <div className="avatar-container">
               <div className="custom-avatar">
                 <img src="/avatar-image.png" alt="Digital Twin Avatar" className="avatar-image" />
                 
-                {/* Blood Pressure Indicator */}
-                <div className="risk-indicator heart-indicator risk-high" style={{top: "150px", left: "205px", zIndex: 5}}>
+                <div className="risk-indicator heart-indicator risk-high" style={{top: "130px", left: "127px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Heart Health</span>
                     <p>Blood pressure status: {userData.blood_pressure === "1" ? "High" : "Normal"}</p>
                   </div>
                 </div>
                 
-                {/* Sleep Indicator */}
-                <div className="risk-indicator sleep-indicator risk-medium" style={{top: "50px", left: "200px", zIndex: 5}}>
+                <div className="risk-indicator sleep-indicator risk-medium" style={{top: "40px", left: "110px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Sleep Health</span>
                     <p>Sleep duration: {userData.sleep} hours/day</p>
                   </div>
                 </div>
                 
-                {/* Physical Activity Indicator */}
-                <div className="risk-indicator fitness-indicator risk-medium" style={{top: "365px", left: "190px", zIndex: 5}}>
+                <div className="risk-indicator fitness-indicator risk-medium" style={{top: "305px", left: "140px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Physical Fitness</span>
                     <p>Activity level: {userData.physical_activity} times/week</p>
                   </div>
                 </div>
                 
-                {/* Sitting Time Indicator */}
-                <div className="risk-indicator metabolic-indicator risk-high" style={{top: "220px", left: "195px", zIndex: 5}}>
+                <div className="risk-indicator metabolic-indicator risk-high" style={{top: "210px", left: "95px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Metabolic Health</span>
                     <p>Daily sitting time: {userData.mins_sedentary} hours</p>
                   </div>
                 </div>
                 
-                {/* Smoking Indicator */}
-                <div className="risk-indicator lungs-indicator risk-high" style={{top: "160px", left: "170px", zIndex: 5}}>
+                <div className="risk-indicator lungs-indicator risk-high" style={{top: "150px", left: "97px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Lung Health</span>
                     <p>Smoking status: {userData.smoke === "1" ? "Daily smoker" : userData.smoke === "2" ? "Occasional smoker" : "Non-smoker"}</p>
                   </div>
                 </div>
                 
-                {/* Weight/BMI Indicator */}
-                <div className="risk-indicator cholesterol-indicator risk-medium" style={{top: "190px", left: "250px", zIndex: 5}}>
+                <div className="risk-indicator cholesterol-indicator risk-medium" style={{top: "165px", left: "127px", zIndex: 5}}>
                   <div className="risk-tooltip">
                     <span className="risk-title">Cardiovascular Health</span>
                     <p>Weight: {userData.weight} kg (BMI: {userData.BMI.toFixed(1)})</p>
@@ -625,23 +641,6 @@ function DigitalTwinPage() {
                 <p>No major health concerns detected for age {projectedAge}</p>
               </div>
             )}
-            <div className="biological-age-card">
-              <h4>Biological Age Estimate</h4>
-              <div className="age-comparison">
-                <div className="age-item">
-                  <span className="age-label">Chronological Age</span>
-                  <span className="age-value">{projectedAge}</span>
-                </div>
-                <div className="age-item">
-                  <span className="age-label">Biological Age</span>
-                  <span className="age-value">{Math.round(biologicalAge)}</span>
-                </div>
-              </div>
-              <div className="bmi-display">
-                <span className="bmi-label">BMI</span>
-                <span className="bmi-value">{userData.BMI.toFixed(1)}</span>
-              </div>
-            </div>
           </div>
           <div className="habits-section">
             <h3>Adjust Your Habits</h3>
@@ -769,6 +768,7 @@ function DigitalTwinPage() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

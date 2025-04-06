@@ -12,7 +12,7 @@
 
 .no-risks-message p {
   font-size: 16px;
-  color: #14d0f6;
+  color: #007acc;
   font-weight: 500;
 }
 
@@ -30,17 +30,16 @@
   margin: 0 auto;
 }
 
-/* Main avatar sizing */
 .future-self-container .avatar-container {
   width: 300px;
   height: 500px;
-}/* Removed connection lines *//* styles.css for Digital Twin Page */
+}
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&display=swap');
 
-/* Main container */
+
 .digital-twin-container {
-  max-width: 1200px; /* Set maximum width */
-  margin: 40px auto; /* Centers the container with 40px top/bottom margin */
+  max-width: 1200px; 
+  margin: 40px auto; 
   padding: 30px;
   font-family: 'Unbounded', sans-serif;
   color: #000;
@@ -51,7 +50,7 @@
   overflow: hidden;
 }
 
-/* Blurred background circles - changing from green to blue */
+
 .digital-twin-container::before {
   content: "";
   position: absolute;
@@ -59,7 +58,7 @@
   left: -20px;
   width: 500px;
   height: 300px;
-  background: #47d1ff;
+  background: #007acc;
   border-radius: 50%;
   filter: blur(90px);
   opacity: 0.46;
@@ -74,7 +73,7 @@
   right: -100px;
   width: 400px;
   height: 400px;
-  background: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
+  background: #007acc; 
   border-radius: 50%;
   filter: blur(90px);
   opacity: 0.46;
@@ -82,7 +81,7 @@
   pointer-events: none;
 }
 
-/* Header section */
+
 .digital-twin-header {
   text-align: center;
   margin-bottom: 40px;
@@ -105,7 +104,7 @@
   margin: 0 auto;
 }
 
-/* Time selector section */
+
 .time-selector {
   text-align: center;
   margin-bottom: 50px;
@@ -137,20 +136,20 @@
   gap: 15px;
 }
 
-/* Fullscreen slideshow styles - full page mode */
+
 .slideshow-fullscreen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: white; /* Changed from semi-transparent to solid white */
+  background-color: white; 
   z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow-y: auto;
-  padding: 0; /* Remove padding for full page experience */
+  padding: 0; 
 }
 
 .slideshow-container {
@@ -193,17 +192,17 @@
 
 .slideshow-fullscreen .lifestyle-label {
   font-size: 16px;
-  color: #14d0f6;
+  color: #007acc;
   font-weight: 500;
 }
 
 .slideshow-fullscreen .exit-button {
   width: 36px;
   height: 36px;
-  border: 2px solid #14d0f6;
+  border: 2px solid #007acc;
   border-radius: 50%;
   background-color: white;
-  color: #14d0f6;
+  color: #007acc;
   font-family: 'Unbounded', sans-serif;
   font-size: 24px;
   font-weight: 500;
@@ -216,11 +215,13 @@
   padding: 0;
 }
 
-
+.white-background{
+  color:white;
+}
 
 
 .slideshow-fullscreen .exit-button:hover {
-  background-color: #14d0f6;
+  background-color: #007acc;
   color: white;
 }
 
@@ -259,7 +260,7 @@
   margin: 30px auto;
   position: relative;
   max-width: 600px;
-  padding: 0 30px; /* Add padding to space dots from edges */
+  padding: 0 30px; 
 }
 
 .slideshow-fullscreen .progress-dot {
@@ -271,7 +272,7 @@
   position: relative;
   z-index: 2;
   transition: all 0.3s ease;
-  margin: 0 5px; /* Space between dots */
+  margin: 0 5px; 
 }
 
 .slideshow-fullscreen .slideshow-progress::before {
@@ -298,14 +299,14 @@
 }
 
 .slideshow-fullscreen .progress-dot.active {
-  border-color: #14d0f6;
-  background-color: #14d0f6;
+  border-color: #007acc;
+  background-color: #007acc;
   transform: scale(1.2);
 }
 
 .slideshow-fullscreen .progress-dot.completed {
-  border-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
-  background-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
+  border-color: #007acc; 
+  background-color: #007acc; 
 }
 
 .slideshow-fullscreen .progress-year {
@@ -332,7 +333,7 @@
   background-color: rgba(20, 208, 246, 0.1);
   border-radius: 15px;
   font-size: 14px;
-  color: #14d0f6;
+  color: #007acc;
   font-weight: 500;
   animation: pulse 1.5s infinite;
 }
@@ -359,10 +360,10 @@
 
 .slideshow-slide .slideshow-avatar-container {
   position: relative;
-  width: 300px; /* Increased from 250px */
-  height: 500px; /* Increased from 400px */
+  width: 300px; 
+  height: 500px; 
   margin: 0 auto;
-  padding: 0 80px; /* Keep padding for text boxes */
+  padding: 0 80px; 
 }
 
 .slideshow-fullscreen .avatar-image {
@@ -462,7 +463,7 @@
   color: #000;
 }
 
-/* Final slide styles */
+
 .slideshow-fullscreen .final-slide {
   padding: 40px 20px;
   text-align: center;
@@ -492,7 +493,7 @@
   font-size: 18px;
 }
 
-/* Lifestyle selection styles */
+
 .lifestyle-selection {
   max-width: 600px;
   margin: 0 auto;
@@ -544,13 +545,13 @@
   text-decoration: underline;
 }
 
-/* Slideshow button */
+
 .slideshow-button {
   padding: 15px 30px;
   font-size: 18px;
 }
 
-/* Slideshow styles */
+
 .slideshow-container {
   width: 100%;
   position: relative;
@@ -578,16 +579,16 @@
 
 .lifestyle-label {
   font-size: 14px;
-  color: #14d0f6;
+  color: #007acc;
   font-weight: 500;
 }
 
 .exit-button {
   padding: 8px 16px;
-  border: 2px solid #14d0f6;
+  border: 2px solid #007acc;
   border-radius: 20px;
   background-color: white;
-  color: #14d0f6;
+  color: #007acc;
   font-family: 'Unbounded', sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -596,7 +597,7 @@
 }
 
 .exit-button:hover {
-  background-color: #14d0f6;
+  background-color: #007acc;
   color: white;
 }
 
@@ -639,13 +640,13 @@
 }
 
 .progress-dot.active {
-  border-color: #14d0f6;
-  background-color: #14d0f6;
+  border-color: #007acc;
+  background-color: #007acc;
 }
 
 .progress-dot.completed {
-  border-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
-  background-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
+  border-color: #007acc; 
+  background-color: #007acc; 
 }
 
 .progress-year {
@@ -672,7 +673,7 @@
   background-color: rgba(20, 208, 246, 0.1);
   border-radius: 10px;
   font-size: 12px;
-  color: #14d0f6;
+  color: #007acc;
   animation: pulse 1.5s infinite;
 }
 
@@ -819,7 +820,7 @@
 
 .year-selector select {
   padding: 10px 15px;
-  border: 2px solid #14d0f6;
+  border: 2px solid #007acc;
   border-radius: 20px;
   background-color: white;
   color: #000;
@@ -840,15 +841,15 @@
 
 .year-selector select:hover,
 .year-selector select:focus {
-  border-color: #04dcd1;
-  box-shadow: 0 0 8px rgba(20, 208, 246, 0.3);
+  border-color: #007acc;
+  box-shadow: #00416d;
 }
 
 .view-toggle-button {
   padding: 12px 28px;
   border: none;
   border-radius: 20px;
-  background-color: #14d0f6;
+  background-color: #007acc;
   color: white;
   font-family: 'Unbounded', sans-serif;
   font-size: 16px;
@@ -862,12 +863,16 @@
 }
 
 .view-toggle-button:hover {
-  background-color: #04dcd1;
+  background-color: #14537e;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(20, 208, 246, 0.3);
+  -webkit-transform: translateY(-2px);
+  -moz-transform: translateY(-2px);
+  -ms-transform: translateY(-2px);
+  -o-transform: translateY(-2px);
 }
 
-/* All futures grid */
+
 .futures-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -910,17 +915,17 @@
   margin: 0 auto 15px;
 }
 
-/* Future self container */
+
 .future-self-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
   position: relative;
   z-index: 2;
-  padding: 0 20px; /* Add side padding */
+  padding: 0 20px; 
 }
 
-/* Avatar section - keeping the original padding */
+
 .avatar-section {
   padding: 30px;
   background: white;
@@ -955,7 +960,7 @@
   object-fit: contain;
 }
 
-/* Risk indicators */
+
 .risk-indicator {
   position: absolute !important;
   width: 24px !important;
@@ -967,15 +972,15 @@
 }
 
 .risk-low {
-  background-color: rgba(40, 167, 69, 0.75) !important; /* Green */
+  background-color: rgba(40, 167, 69, 0.75) !important; 
 }
 
 .risk-medium {
-  background-color: rgba(255, 193, 7, 0.75) !important; /* Yellow */
+  background-color: rgba(255, 193, 7, 0.75) !important; 
 }
 
 .risk-high {
-  background-color: rgba(220, 53, 69, 0.75) !important; /* Red */
+  background-color: rgba(220, 53, 69, 0.75) !important; 
 }
 
 .indicator-line {
@@ -1007,7 +1012,7 @@
   visibility: visible !important;
 }
 
-/* Position the risk indicators */
+
 .heart-indicator {
   top: 40%;
   left: 50%;
@@ -1033,7 +1038,7 @@
   left: 40%;
 }
 
-/* Lifestyle sliders container */
+
 .lifestyle-sliders-container {
   width: 100%;
   max-width: 800px;
@@ -1068,7 +1073,7 @@
   margin-top: 30px;
 }
 
-/* Biological age card */
+
 .biological-age-card {
   margin-top: 30px;
   padding: 20px;
@@ -1124,7 +1129,7 @@
   color: #000;
 }
 
-/* Habits section - keeping the original padding */
+
 .habits-section {
   padding: 30px;
   background: white;
@@ -1151,7 +1156,7 @@
   gap: 20px;
 }
 
-/* Slider styles */
+
 .slider-item {
   margin-bottom: 20px;
 }
@@ -1165,7 +1170,7 @@
 
 .slider-value {
   font-weight: 600;
-  color: #14d0f6;
+  color: #007acc;
 }
 
 .slider-item input[type="range"] {
@@ -1176,7 +1181,7 @@
   outline: none;
   -webkit-appearance: none;
   appearance: none;
-  margin: 0; /* Remove default margins */
+  margin: 0; 
 }
 
 .slider-item input[type="range"]::-webkit-slider-thumb {
@@ -1184,17 +1189,17 @@
   appearance: none;
   width: 20px;
   height: 20px;
-  background: #14d0f6;
+  background: #007acc;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: -6px; /* Center thumb on track */
+  margin-top: -6px; 
 }
 
 .slider-item input[type="range"]::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: #14d0f6;
+  background: #007acc;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1226,10 +1231,10 @@
   margin-top: 5px;
   font-size: 12px;
   color: #3a3a3a;
-  padding: 0 2px; /* Add slight padding to align with slider edges */
+  padding: 0 2px; 
 }
 
-/* Button group styles */
+
 .button-group-item {
   margin-bottom: 20px;
 }
@@ -1264,18 +1269,18 @@
 }
 
 .button-group button:hover {
-  border-color: #14d0f6;
+  border-color: #007acc;
   color: #000;
 }
 
 .button-group button.active {
-  border-color: #14d0f6;
+  border-color: #007acc;
   background-color: rgba(20, 208, 246, 0.1);
-  color: #14d0f6;
+  color: #007acc;
   font-weight: 600;
 }
 
-/* Action buttons */
+
 .action-buttons {
   display: flex;
   justify-content: center;
@@ -1301,28 +1306,28 @@
 }
 
 .primary-button {
-  background-color: #14d0f6;
+  background-color: #007acc;
   color: white;
 }
 
 .primary-button:hover {
-  background-color: #04dcd1;
+  background-color: #007acc;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(20, 208, 246, 0.3);
 }
 
 .secondary-button {
-  background-color: #14d0f6; /* Changed from #22f7e2 (green) to #14d0f6 (blue) */
+  background-color: #007acc; 
   color: white;
 }
 
 .secondary-button:hover {
-  background-color: #04dcd1;
+  background-color: #007acc;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(20, 208, 246, 0.3); /* Changed from rgba(34, 247, 226, 0.3) to rgba(20, 208, 246, 0.3) */
+  box-shadow: 0 5px 15px rgba(20, 208, 246, 0.3); 
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 1240px) {
   .digital-twin-container {
     margin: 20px;
@@ -1362,9 +1367,9 @@
   }
 }
 
-/* Add these CSS updates to your MainPage.css file */
 
-/* Remove multiple colors for risk indicators, use one blue color */
+
+
 .risk-low,
 .risk-medium,
 .risk-high,
@@ -1373,28 +1378,28 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Remove indicator lines */
+
 .indicator-line {
   display: none;
 }
 
-/* Problem indicators for slideshow */
+
 .problem-indicator {
-  background-color: #14d0f6;
+  background-color: #007acc;
   border: none;
   width: 20px;
   height: 20px;
   flex-shrink: 0;
 }
 
-/* Make slideshow problem descriptions more compact */
+
 .slideshow-problem .problem-info {
   max-width: 160px;
   padding: 10px;
   font-size: 0.9em;
 }
 
-/* Position the problem info correctly based on left/right orientation */
+
 .problem-info-left {
   margin-right: 0;
   order: 1;
@@ -1407,7 +1412,7 @@
   position: relative;
 }
 
-/* Make problem titles and descriptions more compact */
+
 .problem-info .problem-title {
   font-size: 13px;
   margin-bottom: 4px;
@@ -1418,7 +1423,16 @@
   line-height: 1.3;
 }
 
-/* Problem left/right alignment */
+
+.slideshow-problem .problem-info .problem-title {
+  font-size: 12px; 
+}
+
+.slideshow-problem .problem-info .problem-description {
+  font-size: 12px; 
+}
+
+
 .problem-left {
   flex-direction: row-reverse;
   text-align: right;
@@ -1429,7 +1443,7 @@
   text-align: left;
 }
 
-/* Adjust placement to prevent overlapping */
+
 .slideshow-problem {
   margin-bottom: 15px;
   z-index: 5;
@@ -1441,18 +1455,18 @@
   width: 200px;
 }
 
-/* Style for the lifestyle confirmation button */
+
 .lifestyle-sliders-buttons .primary-button {
   min-width: 250px;
 }
 
-/* Ensure lifestyle sliders container has proper z-index */
+
 .lifestyle-sliders-container {
   position: relative;
   z-index: 1001;
 }
 
-/* Make avatar image properly centered in slideshow */
+
 .slideshow-avatar-container {
   display: flex;
   justify-content: center;
@@ -1466,7 +1480,7 @@
   width: auto;
 }
 
-/* Position each indicator specifically */
+
 .heart-indicator {
   top: 150px;
   left: 205px;

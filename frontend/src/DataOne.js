@@ -13,7 +13,7 @@ function DataOne() {
 
   const navigate = useNavigate();
 
-  // Load any saved data from localStorage on component mount
+  
   useEffect(() => {
     const savedData = localStorage.getItem('formDataOne');
     if (savedData) {
@@ -31,7 +31,7 @@ function DataOne() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Save to localStorage before navigating
+    
     localStorage.setItem('formDataOne', JSON.stringify(form));
     
     console.log(form);

@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&display=swap');
 
-/* Base styles */
 *, *::before, *::after {
-  box-sizing: border-box; /* Apply border-box globally */
+  box-sizing: border-box;
 }
 
 body, html {
@@ -14,7 +13,6 @@ body, html {
   font-family: 'Unbounded', sans-serif;
 }
 
-/* Main container */
 .results-container {
   max-width: 1200px;
   margin: 40px auto;
@@ -27,26 +25,22 @@ body, html {
   overflow: hidden;
   z-index: 1;
 }
-/* Add specific classes for states if needed for overrides */
+
 .results-container.loading-state,
 .results-container.error-state,
 .results-container.no-results-state {
-    /* Styles specific to these states */
-    min-height: 400px; /* Ensure container has height */
+    min-height: 400px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-/* Remove these background circles from results container */
 .results-container::before,
 .results-container::after {
-  content: none; /* Disable these pseudo-elements */
+  content: none;
 }
 
-
-/* Header */
 .results-header {
   font-size: 36px;
   font-weight: 700;
@@ -57,14 +51,12 @@ body, html {
 
 .results-content {
   display: grid;
-  /* Use 3 equal columns on wider screens */
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px; /* Keep the gap */
+  gap: 25px;
   margin-top: 40px;
-  align-items: start; /* Align items to the start of the grid cell */
+  align-items: start;
 }
 
-/* --- Health Bar Styling (Labels changed in JS) --- */
 .health-bar-container {
   margin: 30px 0 40px;
   text-align: center;
@@ -75,7 +67,6 @@ body, html {
 }
 .health-bar {
   height: 14px;
-  /* Green -> Yellow -> Orange -> Red */
   background: linear-gradient(to right, #28a745, #ffc107, #fd7e14, #dc3545);
   border-radius: 7px;
   position: relative;
@@ -103,7 +94,6 @@ body, html {
   padding: 0 5px;
 }
 
-/* Avatar and Percentiles Container - ensure equal column sizes */
 .avatar-percentile-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -113,7 +103,6 @@ body, html {
   max-height: 600px;
 }
 
-/* Avatar Styling - ensure consistent sizing with percentile container */
 .avatar-container {
   padding: 25px;
   background: white;
@@ -125,24 +114,22 @@ body, html {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  height: 70%; /* Set fixed height instead of percentage */
+  height: 70%;
   width: 100%;
-  overflow: hidden; /* Add overflow control */
+  overflow: hidden;
 }
 
-/* Avatar Visual Container - make it fill container width */
 .avatar-visual {
   position: relative;
   width: 100%;
-  height: 100%; /* Take full height of parent */
+  height: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden; /* Add overflow control */
+  overflow: hidden;
 }
 
-/* Custom avatar - ensure it takes proper space */
 .custom-avatar {
   position: relative;
   width: 100%;
@@ -154,15 +141,15 @@ body, html {
 }
 .avatar-image {
   display: block;
-  max-width: 90%; /* Slightly reduce from 100% */
-  max-height: 90%; /* Slightly reduce from 100% */
+  max-width: 90%;
+  max-height: 90%;
   width: auto;
   height: auto;
   object-fit: contain;
 }
-/* --- MODIFIED: Risk Indicator Base & Colors --- */
+
 .risk-indicator {
-  position: absolute; /* Position is set by inline style from JS */
+  position: absolute;
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -180,35 +167,30 @@ body, html {
   border-color: white;
 }
 
-/* --- MODIFIED: Risk level colors matching new percentile scale --- */
-.risk-low { /* Good Percentiles (80+) */
-  background-color: rgba(40, 167, 69, 0.75); /* #28a745 Dark Green */
+.risk-low {
+  background-color: rgba(40, 167, 69, 0.75);
 }
-.risk-medium { /* Average Percentiles (50-79) */
-  background-color: rgba(255, 193, 7, 0.75); /* #ffc107 Yellow */
-  /* Or Orange: rgba(253, 126, 20, 0.75); */ /* #fd7e14 */
+.risk-medium {
+  background-color: rgba(255, 193, 7, 0.75);
 }
-.risk-high { /* Low Percentiles (<50) */
-  background-color: rgba(220, 53, 69, 0.75); /* #dc3545 Red */
+.risk-high {
+  background-color: rgba(220, 53, 69, 0.75);
 }
 
-/* --- Indicator Line Base Style --- */
 .indicator-line {
   position: absolute;
   height: 2px;
   z-index: -1;
   pointer-events: none;
 }
-/* Match line color to risk level */
-.risk-low .indicator-line { background-color: rgba(40, 167, 69, 0.9); } /* Dark Green */
-.risk-medium .indicator-line { background-color: rgba(255, 193, 7, 0.9); } /* Yellow */
-/* .risk-medium .indicator-line { background-color: rgba(253, 126, 20, 0.9); } */ /* Orange */
-.risk-high .indicator-line { background-color: rgba(220, 53, 69, 0.9); } /* Red */
 
-/* --- Tooltip Positioning & Styling --- */
+.risk-low .indicator-line { background-color: rgba(40, 167, 69, 0.9); }
+.risk-medium .indicator-line { background-color: rgba(255, 193, 7, 0.9); }
+.risk-high .indicator-line { background-color: rgba(220, 53, 69, 0.9); }
+
 .risk-tooltip {
   position: absolute;
-  background-color: rgba(255, 255, 255, 0.97); /* Slightly less transparent */
+  background-color: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(4px);
   padding: 8px 12px;
   backdrop-filter: blur(4px);
@@ -227,7 +209,7 @@ body, html {
   left: 50%;
   transform: translateX(-50%);
 }
-/* Tooltip Triangle */
+
 .risk-tooltip::after {
     content: '';
     position: absolute;
@@ -238,7 +220,7 @@ body, html {
     border-style: solid;
     border-color: rgba(255, 255, 255, 0.97) transparent transparent transparent;
 }
-/* Tooltip Text */
+
 .risk-tooltip .risk-title {
   font-weight: 600;
   display: block;
@@ -257,25 +239,22 @@ body, html {
   visibility: visible;
 }
 
-/* --- MODIFIED: Specific Indicator Styling (NO top/left here) --- */
-/* --- NOTE: Adjust line properties only, based on JS coordinates! --- */
-
 .heart-indicator .indicator-line {
   width: 40px;
   transform: rotate(-50deg);
-  top: 50%; left: 100%; /* Start right edge */
+  top: 50%; left: 100%;
   transform-origin: left center;
 }
 .lungs-indicator .indicator-line {
   width: 35px;
   transform: rotate(45deg);
-  top: 50%; right: 100%; /* Start left edge */
+  top: 50%; right: 100%;
   transform-origin: right center;
 }
 .brain-indicator .indicator-line {
   width: 28px;
   transform: rotate(90deg);
-  top: 100%; left: 50%; /* Start bottom center */
+  top: 100%; left: 50%;
   transform-origin: top center;
 }
 .metabolic-indicator .indicator-line {
@@ -287,11 +266,10 @@ body, html {
 .joints-indicator .indicator-line {
   width: 40px;
   transform: rotate(60deg);
-  top: 50%; right: 100%; /* Start left edge */
+  top: 50%; right: 100%;
   transform-origin: right center;
 }
 
-/* Position each indicator specifically */
 .heart-indicator {
   top: 150px;
   left: 260px;
@@ -302,7 +280,7 @@ body, html {
   left: 220px;
 }
 
-.metabolic-indicator {  /* renamed from diabetes-indicator */
+.metabolic-indicator {
   top: 230px;
   left: 215px;
 }
@@ -312,22 +290,21 @@ body, html {
   left: 250px;
 }
 
-.fitness-indicator {  /* renamed from activity-indicator */
+.fitness-indicator {
   top: 365px;
   left: 200px;
 }
 
-.sleep-indicator {  /* renamed from diet-indicator */
+.sleep-indicator {
   top: 50px;
   left: 233px;
 }
 
-/* Add missing indicator line styling */
 .cholesterol-indicator .indicator-line {
   width: 40px;
   transform: rotate(-60deg);
   top: 50%; 
-  left: 100%; /* Start right edge */
+  left: 100%;
   transform-origin: left center;
 }
 
@@ -347,13 +324,11 @@ body, html {
   transform-origin: right center;
 }
 
-/* Special positioning for sleep indicator tooltip */
 .sleep-indicator .risk-tooltip {
   bottom: auto;
   top: calc(100% + 10px);
 }
 
-/* Reverse the tooltip triangle for sleep indicator */
 .sleep-indicator .risk-tooltip::after {
   top: auto;
   bottom: 100%;
@@ -369,7 +344,6 @@ body, html {
   z-index: 0;
 }
 
-/* --- Results Blocks Styling --- */
 .result-block {
   background-color: white;
   border-radius: 15px;
@@ -377,10 +351,10 @@ body, html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid #f0f0f0;
-  min-height: 150px; /* Ensure blocks have some minimum height */
-  display: flex; /* Use flexbox for content alignment */
+  min-height: 150px;
+  display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Space out title, value, text */
+  justify-content: space-between;
 }
 .result-block:hover {
   transform: translateY(-4px);
@@ -396,13 +370,13 @@ body, html {
   font-size: 32px;
   font-weight: 700;
   margin: 10px 0;
-  flex-grow: 1; /* Allow value to take space */
+  flex-grow: 1;
   display: flex;
-  align-items: center; /* Center value vertically if needed */
+  align-items: center;
 }
-/* Color coding for age difference */
-.result-value.positive-diff { color: #28a745; } /* Dark Green */
-.result-value.negative-diff { color: #fd7e14; } /* Orange */
+
+.result-value.positive-diff { color: #28a745; }
+.result-value.negative-diff { color: #fd7e14; }
 .result-block p {
   font-size: 14px;
   color: #555;
@@ -410,7 +384,6 @@ body, html {
   margin-top: 5px;
 }
 
-/* --- Button Styling (Reverted Text in JS) --- */
 .button-container {
   display: flex;
   justify-content: center;
@@ -436,17 +409,16 @@ body, html {
   transform: translateY(-2px);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
 }
-/* Primary button style */
+
 .primary-button {
-  /* Use a solid color consistent with theme */
-  background-color: #007acc; /* Blue/Teal */
+  background-color: #007acc;
   color: white;
   border: none;
   box-shadow: #ffffff;
 }
 .primary-button:hover {
   background-color: #005994;
-  /*Darkershade*/box-shadow: 0 6px 15px rgba(20, 208, 246, 0.3);
+  box-shadow: 0 6px 15px rgba(20, 208, 246, 0.3);
   transform: translateY(-3px);
   -webkit-transform: translateY(-3px);
   -moz-transform: translateY(-3px);
@@ -454,15 +426,13 @@ body, html {
   -o-transform: translateY(-3px);
 }
 
-/* --- Percentile Scores Styling --- */
 .percentile-container {
   padding: 25px;
   background: white;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  /* min-height: 100%; Ensure it takes up full height of grid cell */
-  height: 70%; /* Match height of grid cell */
-  width: 100%; /* Added to ensure full width of grid cell */
+  height: 70%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -523,7 +493,6 @@ body, html {
   font-weight: 400;
 }
 
-/* Basic Loading Spinner */
 .loading-spinner {
     display: flex;
     justify-content: center;
@@ -535,7 +504,7 @@ body, html {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border-left-color: #007acc; /* Use theme color */
+    border-left-color: #007acc;
     animation: spin 1s ease infinite;
 }
 @keyframes spin {
@@ -543,23 +512,20 @@ body, html {
     100% { transform: rotate(360deg); }
 }
 
-/* Error Message Styling */
 .error-message {
-    color: #dc3545; /* Red */
+    color: #dc3545;
     text-align: center;
     font-weight: 500;
-    margin: 20px auto; /* Center */
+    margin: 20px auto;
     background-color: rgba(220, 53, 69, 0.05);
     padding: 10px 15px;
     border-radius: 8px;
     border: 1px solid rgba(220, 53, 69, 0.1);
-    max-width: 80%; /* Prevent it being too wide */
+    max-width: 80%;
 }
 
-/* --- Responsive adjustments --- */
-@media (max-width: 992px) { /* Adjust breakpoint */
+@media (max-width: 992px) {
   .results-content {
-      /* Change to 2 columns earlier */
       grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -576,13 +542,8 @@ body, html {
     max-width: 1200px;
   }  
   .avatar-percentile-container {
-    grid-template-columns: 1fr; /* Stack avatar and percentiles */
+    grid-template-columns: 1fr;
     gap: 25px;
-  }
-  .avatar-visual {
-      /* Adjust size for smaller screens if needed */
-      /* width: 250px; */
-      /* height: 400px; */
   }
 }
 
@@ -591,11 +552,11 @@ body, html {
       font-size: 30px;
   }
   .results-content {
-    grid-template-columns: 1fr; /* Stack result blocks */
+    grid-template-columns: 1fr;
   }
   .button-container {
-    flex-direction: column; /* Stack buttons */
-    align-items: stretch; /* Make buttons full width */
+    flex-direction: column;
+    align-items: stretch;
     gap: 10px;
   }
 }
@@ -610,7 +571,7 @@ body, html {
         font-size: 26px;
     }
     .avatar-visual {
-        width: 220px; /* Smaller avatar on mobile */
+        width: 220px;
         height: 350px;
     }
     .risk-tooltip {
