@@ -2,8 +2,7 @@
 
 .data-form-page {
   position: relative;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 560;
+  font-family: 'Unbounded', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,12 +15,11 @@
 
 .form-title {
   font-size: 36px;
-  font-family: 'Unbounded', sans-serif;
+  font-weight: 700;
   margin-bottom: 40px;
   color: #000;
   z-index: 2;
 }
-
 
 .form-container {
   background-color: white;
@@ -37,18 +35,12 @@
 }
 
 input, select {
-  margin-top: -10px;
-  padding: 10px 16px;
+  padding: 12px 16px;
   border-radius: 12px;
   border: 1px solid #ccc;
-  font-size: 14px;
-  font-family: 'Outfit', sans-serif;
-  color: gray;
+  font-size: 16px;
+  font-family: 'Unbounded', sans-serif;
   outline: none;
-  -webkit-border-radius: 12px;
-  -moz-border-radius: 12px;
-  -ms-border-radius: 12px;
-  -o-border-radius: 12px;
 }
 
 .height-group {
@@ -57,8 +49,8 @@ input, select {
 }
 
 .submit-btn, .mainpage-btn, .results-btn {
-  margin-top: 10px;
-  background-color: #005f9e;
+  margin-top: 20px;
+  background-color: #14d0f6;
   color: white;
   border: none;
   border-radius: 25px;
@@ -69,10 +61,6 @@ input, select {
   transition: background-color 0.3s ease;
   font-family: 'Unbounded', sans-serif;
   z-index: 2;
-  -webkit-transition: background-color 0.3s ease;
-  -moz-transition: background-color 0.3s ease;
-  -ms-transition: background-color 0.3s ease;
-  -o-transition: background-color 0.3s ease;
 }
 
 .submit-btn:hover,
@@ -114,42 +102,3 @@ input, select {
   background: #29b6f6;
   transform: translateY(-50%);
 }
-
-.yes-no-buttons {
-  display: flex;
-  justify-content: flex-start;
-  gap: 12px;
-  padding-top: 7px;
-}
-
-.yn-button {
-  padding: 6px 18px;
-  border: 2px solid #ccc;
-  border-radius: 999px;
-  background-color: white;
-  color: #007acc;
-  font-weight: 600;
-  font-size: 14px;
-  font-family: 'Unbounded', sans-serif;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
-
-.yn-button:hover {
-  border-color: #007acc;
-  color: #005f9e;
-}
-
-.yn-button.active {
-  background-color: #007acc;
-  color: white;
-  border-color: #007acc;
-}
-
-.question-block {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 20px; /* space between question blocks */
-}
-
