@@ -59,7 +59,7 @@ input, select {
 
 .submit-btn, .mainpage-btn, .results-btn {
   margin-top: 10px;
-  background-color: #005f9e;
+  background-color: #007acc;
   color: white;
   border: none;
   border-radius: 25px;
@@ -79,7 +79,7 @@ input, select {
 .submit-btn:hover,
 .mainpage-btn:hover,
 .results-btn:hover {
-  background-color: #04dcd1;
+  background-color: #004777;
 }
 
 /* Blurred background circles */

@@ -161,6 +161,20 @@ function ResultsPage() {
     return '#e74c3c';                  // Very poor - red
   };
   
+  // Helper function to determine risk level from percentile
+  const getIndicatorRisk = (percentile) => {
+    if (percentile >= 70) return 'low';
+    if (percentile >= 40) return 'medium';
+    return 'high';
+  };
+
+  // Helper function to get risk description
+  const getRiskDescription = (percentile) => {
+    if (percentile >= 70) return 'Good health indicators';
+    if (percentile >= 40) return 'Consider some lifestyle improvements';
+    return 'Attention recommended in this area';
+  };
+
   // Calculate position on the health bar (0-100%)
   const healthBarPosition = resultData 
     ? Math.min(100, Math.max(0, ((resultData.biologicalAge / resultData.chronologicalAge) * 100 - 70)))
@@ -202,9 +216,17 @@ function ResultsPage() {
     );
   }
   
+  
+
   return (
-    <div className="results-container">
-      <h2 className="results-header">Your Biological Age: {resultData.biologicalAge}</h2>      
+      <div className="results-wrapper">
+        {/* 🔵 Blur background elements */}
+        <div className="white_background"></div>
+
+    
+        {/* Main content container */}
+        <div className="results-container">
+          <h2 className="results-header">Your Biological Age: {resultData.biologicalAge}</h2>
       {/* Health Indicator Bar */}
       <div className="health-bar-container">
         <div className="health-bar">
@@ -226,53 +248,73 @@ function ResultsPage() {
             <div className="custom-avatar">
               <img src="/avatar-image.png" alt="Digital Twin Avatar" className="avatar-image" />
               
-              {/* Health risk indicators as overlays */}
-              {resultData.healthRisks?.heart && (
-                <div className={`risk-indicator heart-indicator risk-${resultData.healthRisks.heart.risk}`}>
+              {/* Health risk indicators */}
+              {resultData.percentileScores?.bloodPressure && (
+                <div className={`risk-indicator heart-indicator risk-${getIndicatorRisk(resultData.percentileScores.bloodPressure)}`}>
                   <div className="indicator-line"></div>
                   <div className="risk-tooltip">
                     <span className="risk-title">Heart Health</span>
-                    <p>{resultData.healthRisks.heart.reason}</p>
+                    <p>Blood pressure assessment: {getRiskDescription(resultData.percentileScores.bloodPressure)}</p>
                   </div>
                 </div>
               )}
               
-              {resultData.healthRisks?.lungs && (
-                <div className={`risk-indicator lungs-indicator risk-${resultData.healthRisks.lungs.risk}`}>
+              {resultData.percentileScores?.smokingHabits && (
+                <div className={`risk-indicator lungs-indicator risk-${getIndicatorRisk(resultData.percentileScores.smokingHabits)}`}>
                   <div className="indicator-line"></div>
                   <div className="risk-tooltip">
                     <span className="risk-title">Lung Health</span>
-                    <p>{resultData.healthRisks.lungs.reason}</p>
+                    <p>Smoking habits assessment: {getRiskDescription(resultData.percentileScores.smokingHabits)}</p>
                   </div>
                 </div>
               )}
               
-              {resultData.healthRisks?.brain && (
-                <div className={`risk-indicator brain-indicator risk-${resultData.healthRisks.brain.risk}`}>
-                  <div className="indicator-line"></div>
-                  <div className="risk-tooltip">
-                    <span className="risk-title">Brain Health</span>
-                    <p>{resultData.healthRisks.brain.reason}</p>
-                  </div>
-                </div>
-              )}
-              
-              {resultData.healthRisks?.diabetes && (
-                <div className={`risk-indicator diabetes-indicator risk-${resultData.healthRisks.diabetes.risk}`}>
+              {resultData.percentileScores?.bmi && (
+                <div className={`risk-indicator metabolic-indicator risk-${getIndicatorRisk(resultData.percentileScores.bmi)}`}>
                   <div className="indicator-line"></div>
                   <div className="risk-tooltip">
                     <span className="risk-title">Metabolic Health</span>
-                    <p>{resultData.healthRisks.diabetes.reason}</p>
+                    <p>BMI assessment: {getRiskDescription(resultData.percentileScores.bmi)}</p>
                   </div>
                 </div>
               )}
               
-              {resultData.healthRisks?.joints && (
-                <div className={`risk-indicator joints-indicator risk-${resultData.healthRisks.joints.risk}`}>
+              {resultData.percentileScores?.cholesterol && (
+                <div className={`risk-indicator cholesterol-indicator risk-${getIndicatorRisk(resultData.percentileScores.cholesterol)}`}>
                   <div className="indicator-line"></div>
                   <div className="risk-tooltip">
-                    <span className="risk-title">Joint Health</span>
-                    <p>{resultData.healthRisks.joints.reason}</p>
+                    <span className="risk-title">Cardiovascular Health</span>
+                    <p>Cholesterol level assessment: {getRiskDescription(resultData.percentileScores.cholesterol)}</p>
+                  </div>
+                </div>
+              )}
+              
+              {resultData.percentileScores?.physicalActivity && (
+                <div className={`risk-indicator fitness-indicator risk-${getIndicatorRisk(resultData.percentileScores.physicalActivity)}`}>
+                  <div className="indicator-line"></div>
+                  <div className="risk-tooltip">
+                    <span className="risk-title">Physical Fitness</span>
+                    <p>Activity level assessment: {getRiskDescription(resultData.percentileScores.physicalActivity)}</p>
+                  </div>
+                </div>
+              )}
+              
+              {resultData.percentileScores?.dietaryHabits && (
+                <div className={`risk-indicator diet-indicator risk-${getIndicatorRisk(resultData.percentileScores.dietaryHabits)}`}>
+                  <div className="indicator-line"></div>
+                  <div className="risk-tooltip">
+                    <span className="risk-title">Dietary Health</span>
+                    <p>Diet assessment: {getRiskDescription(resultData.percentileScores.dietaryHabits)}</p>
+                  </div>
+                </div>
+              )}
+
+              {resultData.percentileScores?.sleepQuality && (
+                <div className={`risk-indicator sleep-indicator risk-${getIndicatorRisk(resultData.percentileScores.sleepQuality)}`}>
+                  <div className="indicator-line"></div>
+                  <div className="risk-tooltip">
+                    <span className="risk-title">Sleep Health</span>
+                    <p>Sleep quality assessment: {getRiskDescription(resultData.percentileScores.sleepQuality)}</p>
                   </div>
                 </div>
               )}
@@ -290,7 +332,7 @@ function ResultsPage() {
                   <span className="percentile-label">
                     {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                   </span>
-                  <span className="percentile-value" style={{ color: getPercentileColor(value) }}>
+                  <span className="percentile-value" style={{ color: '#007acc' }}>
                     {Math.round(value)}%
                   </span>
                 </div>
@@ -299,8 +341,9 @@ function ResultsPage() {
                     className="percentile-bar-fill" 
                     style={{ 
                       width: `${value}%`, 
-                      backgroundColor: getPercentileColor(value)
+                      backgroundColor: '#007acc'
                     }}
+                    
                   ></div>
                 </div>
                 <span className="percentile-note">
@@ -351,6 +394,7 @@ function ResultsPage() {
         </button>
       </div>
     </div>
+</div>
   );
 }
 
