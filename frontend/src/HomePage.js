@@ -14,7 +14,8 @@ function HomePage() {
 
       <h1 className="title">DigitalTwin</h1>
       <h4 className="subtitle">
-        Here goes your comments about <br /> the app that we will insert here
+      AI-driven health insights, personalized for you.
+       <br /> Step into the future of proactive care, powered by intelligent technology.
       </h4>
 
       <button className="demo-btn" onClick={() => navigate('/form')}>

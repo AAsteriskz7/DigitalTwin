@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './MainPage.css'; // Assuming you'll have a styles file
 
 function DigitalTwinPage() {
+  // Ref for slideshow timer tracking
+  const slideshowStartTimeRef = useRef(null);
+
   // State for user data based on your actual data model
   const [userData, setUserData] = useState({
     Age: 35,
@@ -24,9 +27,18 @@ function DigitalTwinPage() {
     BMI: 25.8 // calculated
   });
 
-  // State for the time projection
+  // State for view mode and navigation
   const [yearsInFuture, setYearsInFuture] = useState(10);
-  const [showAllFutures, setShowAllFutures] = useState(false);
+  const [viewMode, setViewMode] = useState('single'); // 'single', 'all', 'slideshow'
+  
+  // State for slideshow
+  const [slideshowActive, setSlideshowActive] = useState(false);
+  const [currentYearIndex, setCurrentYearIndex] = useState(0);
+  const [keepSameLifestyle, setKeepSameLifestyle] = useState(true);
+  const [showLifestyleButtons, setShowLifestyleButtons] = useState(false);
+  const [animatingProblems, setAnimatingProblems] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(10);
   
   // Health risk factors calculated based on user data and projection
   const [healthRisks, setHealthRisks] = useState({});
@@ -192,11 +204,96 @@ function DigitalTwinPage() {
       [field]: value
     });
   };
-
+  
   // Toggle between single projection and multiple futures
   const toggleViewMode = () => {
-    setShowAllFutures(!showAllFutures);
+    setViewMode(viewMode === 'single' ? 'all' : 'single');
   };
+  
+  // Start the lifestyle selection process
+  const startFuturePreview = () => {
+    setShowLifestyleButtons(true);
+  };
+  
+  // Start slideshow with selected lifestyle option
+  const startSlideshow = (keepCurrent) => {
+    setKeepSameLifestyle(keepCurrent);
+    setShowLifestyleButtons(false);
+    setSlideshowActive(true);
+    setCurrentYearIndex(0);
+    setAnimatingProblems(true);
+    setAnimationComplete(false);
+    slideshowStartTimeRef.current = Date.now();
+    setRemainingTime(10);
+    // Add fullscreen class to body
+    document.body.classList.add('slideshow-fullscreen-active');
+  };
+  
+  // Stop slideshow
+  const stopSlideshow = () => {
+    setSlideshowActive(false);
+    setShowLifestyleButtons(false);
+    // Remove fullscreen class from body
+    document.body.classList.remove('slideshow-fullscreen-active');
+  };
+  
+  // Countdown timer effect
+  useEffect(() => {
+    let timerInterval;
+    
+    if (slideshowActive && animationComplete) {
+      timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - slideshowStartTimeRef.current) / 1000);
+        const remaining = Math.max(0, 10 - elapsed);
+        setRemainingTime(remaining);
+        
+        if (remaining === 0) {
+          clearInterval(timerInterval);
+        }
+      }, 1000);
+    }
+    
+    return () => {
+      clearInterval(timerInterval);
+    };
+  }, [slideshowActive, animationComplete]);
+  
+  // Handle slideshow auto-advancement
+  useEffect(() => {
+    let slideTimer;
+    let animationTimer;
+    
+    if (slideshowActive) {
+      // Reset timer reference
+      slideshowStartTimeRef.current = Date.now();
+      
+      // Set animation flag at the start of each slide
+      setAnimatingProblems(true);
+      setAnimationComplete(false);
+      
+      // Wait for animation to complete (problems appearing takes around 4 seconds)
+      animationTimer = setTimeout(() => {
+        setAnimationComplete(true);
+      }, 4000);
+      
+      // Advance to next slide after 10 seconds
+      slideTimer = setTimeout(() => {
+        const yearOptions = getTimeframeOptions();
+        
+        if (currentYearIndex < yearOptions.length - 1) {
+          setCurrentYearIndex(prev => prev + 1);
+        } else {
+          // Show one more slide with final message
+          setCurrentYearIndex(yearOptions.length);
+        }
+      }, 10000);
+    }
+    
+    return () => {
+      clearTimeout(slideTimer);
+      clearTimeout(animationTimer);
+    };
+  }, [slideshowActive, currentYearIndex]);
 
   return (
     <div className="digital-twin-container">
@@ -209,13 +306,13 @@ function DigitalTwinPage() {
       <div className="time-selector">
         <h2>See Your Future Self</h2>
         
-        {!showAllFutures ? (
+        {viewMode === 'single' && !slideshowActive && !showLifestyleButtons && (
           <div className="single-future-view">
             <button 
-              className="view-toggle-button"
-              onClick={toggleViewMode}
+              className="view-toggle-button slideshow-button" 
+              onClick={startFuturePreview}
             >
-              Preview All My Future
+              Preview My Future
             </button>
             <div className="year-selector">
               <span>In</span>
@@ -230,7 +327,9 @@ function DigitalTwinPage() {
               <span>You at age {projectedAge}</span>
             </div>
           </div>
-        ) : (
+        )}
+        
+        {viewMode === 'all' && (
           <div className="all-futures-view">
             <button 
               className="view-toggle-button"
@@ -258,7 +357,188 @@ function DigitalTwinPage() {
         )}
       </div>
       
-      {!showAllFutures && (
+      {/* Lifestyle Selection Modal */}
+      {showLifestyleButtons && (
+        <div className="lifestyle-selection">
+          <h3>How would you like to see your future?</h3>
+          <p>Choose an option to start the slideshow</p>
+          <div className="lifestyle-buttons">
+            <button 
+              className="primary-button lifestyle-choice" 
+              onClick={() => startSlideshow(true)}
+            >
+              Keep Current Lifestyle
+            </button>
+            <button 
+              className="secondary-button lifestyle-choice" 
+              onClick={() => startSlideshow(false)}
+            >
+              Optimize My Lifestyle
+            </button>
+          </div>
+          <button 
+            className="cancel-button" 
+            onClick={() => setShowLifestyleButtons(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+      
+      {/* Fullscreen Slideshow */}
+      {slideshowActive && (
+        <div className="slideshow-fullscreen">
+          <div className="slideshow-container">
+            <div className="slideshow-header">
+              <div className="slideshow-title">
+                <h3>Your Future Timeline</h3>
+                <span className="lifestyle-label">
+                  {keepSameLifestyle ? 'Current Lifestyle' : 'Optimized Lifestyle'}
+                </span>
+              </div>
+              <button 
+                className="exit-button" 
+                onClick={stopSlideshow}
+              >
+                Exit Preview
+              </button>
+            </div>
+            
+            <div className="slideshow-content">
+              <div className="slideshow-progress">
+                {getTimeframeOptions().map((years, index) => (
+                  <div 
+                    key={years} 
+                    className={`progress-dot ${index === currentYearIndex ? 'active' : ''} ${index < currentYearIndex ? 'completed' : ''}`}
+                  >
+                    <span className="progress-year">+{years}</span>
+                  </div>
+                ))}
+              </div>
+              
+              {currentYearIndex < getTimeframeOptions().length ? (
+                <>
+                  <div className="timeline-indicator">
+                    {animationComplete && (
+                      <div className="next-slide-indicator">
+                        Next slide in {remainingTime} seconds
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="slideshow-slide">
+                    <h4>In {getTimeframeOptions()[currentYearIndex]} years</h4>
+                    <p>You at age {userData.Age + getTimeframeOptions()[currentYearIndex]}</p>
+                    
+                    <div className="slideshow-avatar-container">
+                      <img src="/avatar-image.png" alt="Digital Twin Avatar" className="avatar-image" />
+                      
+                      {/* Health problems that animate in sequence from top to bottom */}
+                      {Object.entries(healthRisks)
+                        .sort((a, b) => {
+                          // Sort by body location from top to bottom
+                          const locationOrder = {
+                            'head': 1,
+                            'lungs': 2,
+                            'chest': 3,
+                            'abdomen': 4,
+                            'knees': 5
+                          };
+                          return locationOrder[a[1].location] - locationOrder[b[1].location];
+                        })
+                        .map(([riskKey, risk], index) => {
+                          // Calculate risk severity based on time and lifestyle
+                          let adjustedRisk = risk.risk;
+                          const yearProjection = getTimeframeOptions()[currentYearIndex];
+                          
+                          if (keepSameLifestyle) {
+                            // Risk worsens over time with current lifestyle
+                            if (yearProjection >= 30 && risk.risk !== 'high') {
+                              adjustedRisk = 'high';
+                            } else if (yearProjection >= 20 && risk.risk === 'low') {
+                              adjustedRisk = 'medium';
+                            }
+                          } else {
+                            // Risk improves with optimized lifestyle
+                            if (yearProjection <= 10 && risk.risk === 'high') {
+                              adjustedRisk = 'medium';
+                            } else if (risk.risk === 'medium') {
+                              adjustedRisk = 'low';
+                            }
+                          }
+                          
+                          return (
+                            <div 
+                              key={riskKey}
+                              className={`slideshow-problem ${animatingProblems ? 'animate' : ''}`} 
+                              style={{ 
+                                animationDelay: `${index * 0.8}s`,
+                                left: index % 2 === 0 ? '0' : 'auto',
+                                right: index % 2 === 1 ? '0' : 'auto',
+                                top: risk.location === 'head' ? '10%' : 
+                                     risk.location === 'lungs' ? '30%' : 
+                                     risk.location === 'chest' ? '35%' : 
+                                     risk.location === 'abdomen' ? '50%' : '75%'
+                              }}
+                            >
+                              <div className={`problem-indicator risk-${adjustedRisk}`}></div>
+                              <div className="problem-info">
+                                <span className="problem-title">
+                                  {riskKey === 'heart' ? 'Heart Health' :
+                                   riskKey === 'lungs' ? 'Lung Health' :
+                                   riskKey === 'brain' ? 'Brain Health' :
+                                   riskKey === 'diabetes' ? 'Metabolic Health' : 'Joint Health'}
+                                </span>
+                                <p className="problem-description">{risk.reason}</p>
+                              </div>
+                            </div>
+                          );
+                        })
+                      }
+                    </div>
+                    
+                    <div className="slideshow-age-card">
+                      <div className="age-comparison">
+                        <div className="age-item">
+                          <span className="age-label">Chronological Age</span>
+                          <span className="age-value">{userData.Age + getTimeframeOptions()[currentYearIndex]}</span>
+                        </div>
+                        <div className="age-item">
+                          <span className="age-label">Biological Age</span>
+                          <span className="age-value">
+                            {keepSameLifestyle 
+                              ? Math.round(userData.Age + getTimeframeOptions()[currentYearIndex] + 
+                                  (getTimeframeOptions()[currentYearIndex] > 20 ? 8 : 4))
+                              : Math.round(userData.Age + getTimeframeOptions()[currentYearIndex] - 2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="final-slide">
+                  <h3>Take Action Before It's Too Late</h3>
+                  <div className="final-message">
+                    <p>Your daily habits today shape your health tomorrow.</p>
+                    <p>Small changes can have a big impact on your future wellbeing.</p>
+                    <p>The best time to start is now.</p>
+                  </div>
+                  <button 
+                    className="primary-button start-again-button" 
+                    onClick={stopSlideshow}
+                  >
+                    Back to Digital Twin
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Main Content - Avatar and Sliders */}
+      {viewMode === 'single' && !slideshowActive && !showLifestyleButtons && (
         <div className="future-self-container">
           {/* Avatar Section */}
           <div className="avatar-section">
@@ -267,7 +547,7 @@ function DigitalTwinPage() {
             <div className="avatar-container">
               {/* Custom avatar image */}
               <div className="custom-avatar">
-                <img src="/path/to/your/avatar-image.png" alt="Digital Twin Avatar" className="avatar-image" />
+                 <img src="/avatar-image.png" alt="Digital Twin Avatar" className="avatar-image" />
                 
                 {/* Health risk indicators as overlays */}
                 {healthRisks.heart && (
@@ -527,14 +807,16 @@ function DigitalTwinPage() {
       )}
       
       {/* Action buttons */}
-      <div className="action-buttons">
-        <button className="primary-button">
-          Save My Digital Twin
-        </button>
-        <button className="secondary-button">
-          Get Personalized Recommendations
-        </button>
-      </div>
+      {viewMode === 'single' && !slideshowActive && !showLifestyleButtons && (
+        <div className="action-buttons">
+          <button className="primary-button">
+            Save My Digital Twin
+          </button>
+          <button className="secondary-button">
+            Get Personalized Recommendations
+          </button>
+        </div>
+      )}
     </div>
   );
 }

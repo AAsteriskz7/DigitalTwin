@@ -1,47 +1,436 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&display=swap');
+
+/* Full-screen container */
+body, html {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: #f9f9f9;
+}
+
 .results-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 40px;
+  font-family: 'Unbounded', sans-serif;
+  color: #000;
+  background-color: white;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: visible;
+}
+
+/* Enhanced blurred background circles */
+.results-container::before {
+  content: "";
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 70vw;
+  height: 70vh;
+  background: #47d1ff;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.35;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.results-container::after {
+  content: "";
+  position: fixed;
+  bottom: -10%;
+  right: -10%;
+  width: 70vw;
+  height: 70vh;
+  background: #22f7e2;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.35;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .results-header {
-  color: #2c3e50;
-  border-bottom: 2px solid #3498db;
-  padding-bottom: 10px;
-  margin-bottom: 30px;
+  font-size: 42px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 2;
 }
 
 .results-content {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 25px;
-  margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  position: relative;
+  z-index: 2;
+  margin-top: 40px;
 }
 
-.results-message {
-  font-size: 18px;
-  color: #27ae60;
+/* Health Bar Styling */
+.health-bar-container {
+  margin: 40px 0;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  padding: 30px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.health-bar {
+  height: 16px;
+  background: linear-gradient(to right, #14d0f6, #f39c12, #e74c3c);
+  border-radius: 10px;
+  position: relative;
   margin-bottom: 15px;
 }
 
-.results-thank-you {
-  color: #7f8c8d;
+.health-marker {
+  width: 20px;
+  height: 30px;
+  background-color: #14d0f6;
+  border-radius: 5px;
+  position: absolute;
+  top: -7px;
+  transform: translateX(-50%);
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.health-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #3a3a3a;
+  font-weight: 500;
+}
+
+/* Avatar and Percentiles Container */
+.avatar-percentile-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin: 50px 0;
+}
+
+/* Avatar Styling */
+.avatar-container {
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 2;
+  height: fit-content;
+  margin: 0;
+}
+
+.avatar-container h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 25px;
+}
+
+.avatar-visual {
+  position: relative;
+  width: 300px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.custom-avatar {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Risk indicators */
+.risk-indicator {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.risk-indicator:hover {
+  transform: scale(1.1);
+}
+
+.risk-low {
+  background-color: rgba(34, 247, 226, 0.7);
+}
+
+.risk-medium {
+  background-color: rgba(20, 208, 246, 0.7);
+}
+
+.risk-high {
+  background-color: rgba(71, 209, 255, 0.9);
+}
+
+.indicator-line {
+  position: absolute;
+  height: 2px;
+  background-color: #333;
+  z-index: 1;
+}
+
+.risk-tooltip {
+  position: absolute;
+  background-color: white;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  width: 150px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.risk-indicator:hover .risk-tooltip {
+  opacity: 1;
+}
+
+.risk-title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+  color: #000;
+}
+
+/* Position the risk indicators */
+.heart-indicator {
+  top: 40%;
+  left: 50%;
+}
+
+.lungs-indicator {
+  top: 35%;
+  left: 35%;
+}
+
+.brain-indicator {
+  top: 10%;
+  left: 50%;
+}
+
+.diabetes-indicator {
+  top: 50%;
+  left: 50%;
+}
+
+.joints-indicator {
+  top: 75%;
+  margin-bottom: 15px;
+}
+
+.age-comparison {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 15px;
+}
+
+.age-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.age-label {
+  font-size: 14px;
+  color: #3a3a3a;
+  margin-bottom: 5px;
+}
+
+.age-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
+}
+
+/* Results Blocks Styling */
+.result-block {
+  background-color: white;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  border: none;
+}
+
+.result-block:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(20, 208, 246, 0.15);
+}
+
+.result-block h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 15px;
+}
+
+.result-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: #14d0f6;
+  margin: 15px 0;
+}
+
+/* Button Styling */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 40px;
+  position: relative;
+  z-index: 2;
 }
 
 .nav-button {
-  background-color: #3498db;
-  color: white;
+  padding: 12px 28px;
   border: none;
-  padding: 10px 20px;
-  margin: 10px;
-  border-radius: 4px;
-  cursor: pointer;
+  border-radius: 20px;
+  font-family: 'Unbounded', sans-serif;
   font-size: 16px;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: white;
+  color: #14d0f6;
+  border: 2px solid #14d0f6;
 }
 
 .nav-button:hover {
-  background-color: #2980b9;
+  background-color: rgba(20, 208, 246, 0.1);
+  transform: translateY(-2px);
+}
+
+.primary-button {
+  background-color: #14d0f6;
+  color: white;
+  border: none;
+}
+
+.primary-button:hover {
+  background-color: #04dcd1;
+  box-shadow: 0 5px 15px rgba(20, 208, 246, 0.3);
+}
+
+/* Avatar and Percentile Layout */
+.avatar-percentile-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+/* Percentile Scores Styling */
+.percentile-container {
+  padding: 30px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 2;
+}
+
+.percentile-container h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.percentile-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.percentile-item {
+  margin-bottom: 15px;
+}
+
+.percentile-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.percentile-label {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.percentile-value {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.percentile-bar-bg {
+  width: 100%;
+  height: 12px;
+  background-color: #f1f1f1;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 3px;
+}
+
+.percentile-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.percentile-note {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .results-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .button-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-button {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .avatar-percentile-container {
+    grid-template-columns: 1fr;
+  }
 }
