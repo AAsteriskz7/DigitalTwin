@@ -5,8 +5,7 @@ Node.js & npm installed
 cd backend
 python server.py
 
-💻 Frontend
-cd ..   (to go back)
+💻 Frontend (in Another Terminal)
 cd frontend
 npm install
 npm install react-simple-typewriter
