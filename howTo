@@ -1,16 +1,16 @@
-🚀 How to Run the Project
-
-🧩 Prerequisites
+Prerequisites
 Node.js & npm installed
 
-📁 Step 1: Navigate to the frontend folder
-cd frontend
+🧩Backend
+cd backend
+python server.py
 
-📦 Step 2: Install frontend dependencies
+💻 Frontend
+cd frontend
 npm install
 npm install react-simple-typewriter
 
-💻 Step 4: Start the development server
+🚀Start
 npm start
 
 Visit the app at:
