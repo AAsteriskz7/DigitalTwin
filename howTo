@@ -6,6 +6,7 @@ cd backend
 python server.py
 
 💻 Frontend
+cd ..   (to go back)
 cd frontend
 npm install
 npm install react-simple-typewriter
